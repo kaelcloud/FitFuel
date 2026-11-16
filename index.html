@@ -382,6 +382,32 @@ input,select{font:inherit;color:inherit}
 div.row{cursor:default}
 .toast{white-space:normal;line-height:1.35;border-radius:20px}
 
+/* stage 3 */
+.warn{display:flex;gap:7px;align-items:flex-start;color:var(--gold);font-size:13px;line-height:1.4;margin:0 2px 12px}
+.warn .ic{flex:none;margin-top:1px}
+.split{padding:14px 16px}
+.split-head h3{font-size:15px;font-weight:600;margin-bottom:10px}
+.split-bar{display:flex;height:10px;border-radius:6px;overflow:hidden;gap:2px;background:var(--s3)}
+.split-bar span{display:block;height:100%;transition:width .8s var(--ease)}
+.split-legend{display:grid;grid-template-columns:repeat(3,1fr);margin-top:12px}
+.split-legend div{display:flex;flex-direction:column;gap:1px}
+.split-legend span{font-size:12px;color:var(--mute);display:flex;align-items:center;gap:6px}
+.split-legend i{width:7px;height:7px;border-radius:50%;display:block}
+.split-legend b{font-family:var(--round);font-size:20px;font-weight:650}
+.split-legend small{font-size:12px;color:var(--dim)}
+.meal-head h3 small{display:flex;font-size:12px;font-weight:500;margin-top:2px}
+.calc{border-top:1px solid var(--line);padding-top:16px;margin-top:6px}
+.radio{width:22px;height:22px;border-radius:50%;border:2px solid var(--s4);flex:none;transition:border-color .2s,background .2s}
+.radio.on{border:6px solid var(--lime)}
+.sugg{background:var(--s1);border:1px solid var(--line);border-radius:20px;padding:14px 16px;margin-bottom:12px}
+.sugg-row{display:flex;justify-content:space-between;font-size:14px;color:var(--mute);padding:3px 0}
+.sugg-row b{color:var(--text);font-weight:600}
+.sugg-big{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);margin-top:8px;padding-top:10px}
+.sugg-big span{font-size:15px}
+.sugg-big b{font-size:26px;font-weight:700;color:var(--lime)}
+.sugg-macros{display:flex;gap:14px;font-size:14px;margin-top:6px}
+.sugg-macros .p{color:var(--mint)}.sugg-macros .c{color:var(--gold)}.sugg-macros .f{color:var(--coral)}
+
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 </style>
 </head>
@@ -691,7 +717,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
 <script>/* htm 3.1.1 (Apache-2.0) */!function(n,e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e():"function"==typeof define&&define.amd?define(e):n.htm=e()}(this,function(){var n=function(e,t,u,s){var r;t[0]=0;for(var p=1;p<t.length;p++){var h=t[p++],o=t[p]?(t[0]|=h?1:2,u[t[p++]]):t[++p];3===h?s[0]=o:4===h?s[1]=Object.assign(s[1]||{},o):5===h?(s[1]=s[1]||{})[t[++p]]=o:6===h?s[1][t[++p]]+=o+"":h?(r=e.apply(o,n(e,o,u,["",null])),s.push(r),o[0]?t[0]|=2:(t[p-2]=0,t[p]=r)):s.push(o)}return s},e=new Map;return function(t){var u=e.get(this);return u||(u=new Map,e.set(this,u)),(u=n(this,u.get(t)||(u.set(t,u=function(n){for(var e,t,u=1,s="",r="",p=[0],h=function(n){1===u&&(n||(s=s.replace(/^\s*\n\s*|\s*\n\s*$/g,"")))?p.push(0,n,s):3===u&&(n||s)?(p.push(3,n,s),u=2):2===u&&"..."===s&&n?p.push(4,n,0):2===u&&s&&!n?p.push(5,0,!0,s):u>=5&&((s||!n&&5===u)&&(p.push(u,0,s,t),u=6),n&&(p.push(u,n,0,t),u=6)),s=""},o=0;o<n.length;o++){o&&(1===u&&h(),h(o));for(var f=0;f<n[o].length;f++)e=n[o][f],1===u?"<"===e?(h(),p=[p],u=3):s+=e:4===u?"--"===s&&">"===e?(u=1,s=""):s=e+s[0]:r?e===r?r="":s+=e:'"'===e||"'"===e?r=e:">"===e?(h(),u=1):u&&("="===e?(u=5,t=s,s=""):"/"===e&&(u<5||">"===n[o][f+1])?(h(),3===u&&(p=p[0]),u=p,(p=p[0]).push(2,0,u),u=0):" "===e||"\t"===e||"\n"===e||"\r"===e?(h(),u=2):s+=e),3===u&&"!--"===s&&(u=4,p=p[0])}return h(),p}(t)),u),arguments,[])).length>1?u:u[0]}});
 </script>
 <script>
-/* FitFuel AI — Stage 2: UI, navigation and on-device storage (IndexedDB) */
+/* FitFuel AI — Stage 3: UI, on-device storage, nutrition calculations */
 const { useState, useEffect, useRef, useMemo, useCallback, createContext, useContext, useReducer } = React;
 const html = htm.bind(React.createElement);
 
@@ -768,6 +794,54 @@ function validateFood(f) {
   }
   if (num(f.kcal) > 6000) return 'Calories look too high for one item. Check the value.';
   return '';
+}
+
+/* ---------------- nutrition maths (Stage 3) ---------------- */
+/* Energy per gram: protein 4, carbohydrate 4, fat 9 (Atwater factors). */
+const KCAL_PER_G = { protein: 4, carbs: 4, fat: 9 };
+const macroKcal = (p, c, f) => p * KCAL_PER_G.protein + c * KCAL_PER_G.carbs + f * KCAL_PER_G.fat;
+/* Flags entries whose macros don't roughly add up to the calories typed in.
+   Fibre, alcohol and label rounding cause small gaps, so only large ones are flagged. */
+function energyCheck(kcal, p, c, f) {
+  const mk = macroKcal(p, c, f);
+  if (kcal <= 0 && mk <= 0) return null;
+  const gap = mk - kcal;
+  const off = Math.abs(gap) > 40 && Math.abs(gap) > 0.2 * Math.max(kcal, mk);
+  return off ? { macroK: mk, gap } : null;
+}
+/* Share of calories from each macro, based on macro grams. */
+function energySplit(t) {
+  const pk = t.protein * 4, ck = t.carbs * 4, fk = t.fat * 9, sum = pk + ck + fk;
+  if (sum <= 0) return null;
+  const pct = [pk, ck, fk].map(v => v / sum * 100);
+  const r = pct.map(Math.round);
+  r[r.indexOf(Math.max(...r))] += 100 - r.reduce((a, b) => a + b, 0); /* keep the total at exactly 100% */
+  return { protein: r[0], carbs: r[1], fat: r[2], raw: pct };
+}
+/* Mifflin-St Jeor resting energy, then an activity multiplier. An estimate, not a measurement. */
+const ACTIVITY = [
+  { id: 1.2, label: 'Mostly sitting', sub: 'Desk or driving, little exercise' },
+  { id: 1.375, label: 'Light', sub: 'Exercise 1–3 days a week' },
+  { id: 1.55, label: 'Moderate', sub: 'Exercise 3–5 days a week' },
+  { id: 1.725, label: 'Very active', sub: 'Hard training 6–7 days a week' },
+];
+const GOALS = [
+  { id: 'lose', label: 'Lose fat', factor: 0.85 },
+  { id: 'recomp', label: 'Recomp', factor: 1 },
+  { id: 'gain', label: 'Build muscle', factor: 1.1 },
+];
+function bmr(p) { return 10 * p.weight + 6.25 * p.height - 5 * p.age + (p.gender === 'Female' ? -161 : 5); }
+const round5 = v => Math.round(v / 5) * 5;
+const round50 = v => Math.round(v / 50) * 50;
+function suggestTargets(p, activity, goalId, proteinPerKg) {
+  const b = bmr(p);
+  const maintenance = b * activity;
+  const goal = GOALS.find(g => g.id === goalId) || GOALS[1];
+  const kcal = round50(maintenance * goal.factor);
+  const protein = round5(p.weight * proteinPerKg);
+  const fat = round5(kcal * 0.25 / 9);
+  const carbs = Math.max(0, round5((kcal - protein * 4 - fat * 9) / 4));
+  return { bmr: Math.round(b), maintenance: Math.round(maintenance), kcal, protein, fat, carbs };
 }
 
 /* ---------------- icons (Lucide-style, inlined so they work offline) ---------------- */
@@ -1247,6 +1321,25 @@ function WeekStrip() {
   </div>`;
 }
 
+function SplitBar({ tot, target }) {
+  const sp = energySplit(tot);
+  const tp = energySplit(target);
+  if (!sp) return null;
+  return html`<div className="card split">
+    <div className="split-head"><h3>Where your calories came from</h3></div>
+    <div className="split-bar" role="img" aria-label=${`Protein ${sp.protein}%, carbs ${sp.carbs}%, fat ${sp.fat}% of calories`}>
+      <span style=${{ width: sp.raw[0] + '%', background: 'var(--mint)' }}></span>
+      <span style=${{ width: sp.raw[1] + '%', background: 'var(--gold)' }}></span>
+      <span style=${{ width: sp.raw[2] + '%', background: 'var(--coral)' }}></span>
+    </div>
+    <div className="split-legend">
+      ${[['Protein', 'protein', 'var(--mint)'], ['Carbs', 'carbs', 'var(--gold)'], ['Fat', 'fat', 'var(--coral)']].map(([l, k, c]) => html`<div key=${k}>
+        <span><i style=${{ background: c }}></i>${l}</span><b className="num">${sp[k]}%</b>${tp && html`<small>plan ${tp[k]}%</small>`}
+      </div>`)}
+    </div>
+  </div>`;
+}
+
 function FoodLog() {
   const { state, date, dispatch, openSheet, notify } = useApp();
   const dayEntries = state.entries.filter(e => e.date === date);
@@ -1283,6 +1376,7 @@ function FoodLog() {
       <div><b style=${{ color: 'var(--gold)' }}>${fmt(tot.carbs)}</b><span>carbs</span></div>
       <div><b style=${{ color: 'var(--coral)' }}>${fmt(tot.fat)}</b><span>fat</span></div>
     </div>
+    <${SplitBar} tot=${tot} target=${state.profile} />
     <button className="add-big press" onClick=${() => openSheet('addFood', { meal: date === todayKey() ? mealForNow() : 'snacks' })}><${Icon} name="plus" size=${20} />Add food</button>
 
     ${quick.length > 0 && html`<div>
@@ -1298,7 +1392,7 @@ function FoodLog() {
       return html`<div className="meal-card" key=${m.id}>
         <div className="meal-head">
           <${Icon} name=${m.icon} size=${20} />
-          <h3>${m.label}</h3>
+          <h3>${m.label}${list.length > 0 && html`<small className="mac"><b className="p">P ${fmt(mt.protein)}</b><b className="c">C ${fmt(mt.carbs)}</b><b className="f">F ${fmt(mt.fat)}</b></small>`}</h3>
           <span className="kc num">${list.length ? `${fmt(mt.kcal)} kcal` : ''}</span>
           <button className="round-btn press" style=${{ width: 32, height: 32 }} aria-label=${`Add to ${m.label}`} onClick=${() => openSheet('addFood', { meal: m.id })}><${Icon} name="plus" size=${16} /></button>
         </div>
@@ -1515,6 +1609,12 @@ function MealSeg({ value, onChange }) {
   return html`<div className="seg">${MEALS.map(m => html`<button key=${m.id} type="button" className=${value === m.id ? 'on' : ''} onClick=${() => onChange(m.id)}>${m.label}</button>`)}</div>`;
 }
 
+function EnergyHint({ kcal, p, c, f }) {
+  const chk = energyCheck(kcal, p, c, f);
+  if (!chk) return null;
+  return html`<p className="warn"><${Icon} name="alert" size=${15} /><span>The macros add up to about ${fmt(chk.macroK)} kcal, but calories say ${fmt(kcal)}. One of the numbers may be off.</span></p>`;
+}
+
 function FoodForm({ initial, submitLabel, onSubmit, children }) {
   const [f, setF] = useState(() => ({ name: '', meal: mealForNow(), grams: '', kcal: '', protein: '', carbs: '', fat: '', per100: null, ...initial }));
   const [err, setErr] = useState('');
@@ -1531,6 +1631,7 @@ function FoodForm({ initial, submitLabel, onSubmit, children }) {
       </div>
     </div>
     ${f.per100 && num(f.grams) > 0 && html`<p className="hint">Change the portion and the nutrition rescales automatically.</p>`}
+    <${EnergyHint} kcal=${num(f.kcal)} p=${num(f.protein)} c=${num(f.carbs)} f=${num(f.fat)} />
     ${err && html`<p className="err"><${Icon} name="alert" size=${15} />${err}</p>`}
     <div className="actions"><button className="btn primary press" onClick=${submit}>${submitLabel}</button></div>
     ${children}
@@ -1595,13 +1696,40 @@ function ProfileSheet({ onClose }) {
   <//>`;
 }
 
+function TargetCalculator({ profile, onUse }) {
+  const [activity, setActivity] = useState(1.375);
+  const [goal, setGoal] = useState('recomp');
+  const [ppk, setPpk] = useState(1.8);
+  const sug = suggestTargets(profile, activity, goal, ppk);
+  return html`<div className="calc">
+    <p className="hint" style=${{ margin: '0 0 12px' }}>Based on ${profile.age} years, ${profile.gender.toLowerCase()}, ${fmt(profile.height)} cm and ${fmt1(profile.weight)} kg. Update your profile first if any of these are out of date.</p>
+    <div className="field"><label>Activity level</label>
+      <div className="group" style=${{ marginBottom: 0 }}>${ACTIVITY.map(a => html`<button key=${a.id} className="row press" onClick=${() => setActivity(a.id)}>
+        <span className="rl">${a.label}<small>${a.sub}</small></span>
+        <span className=${'radio' + (activity === a.id ? ' on' : '')}></span>
+      </button>`)}</div>
+    </div>
+    <div className="field"><label>Goal</label><div className="seg">${GOALS.map(g => html`<button key=${g.id} className=${goal === g.id ? 'on' : ''} onClick=${() => setGoal(g.id)}>${g.label}</button>`)}</div></div>
+    <div className="field"><label>Protein per kg of body weight</label><div className="seg">${[1.6, 1.8, 2, 2.2].map(v => html`<button key=${v} className=${ppk === v ? 'on' : ''} onClick=${() => setPpk(v)}>${v} g</button>`)}</div></div>
+    <div className="sugg">
+      <div className="sugg-row"><span>Resting energy (BMR)</span><b className="num">${fmt(sug.bmr)} kcal</b></div>
+      <div className="sugg-row"><span>Estimated maintenance</span><b className="num">${fmt(sug.maintenance)} kcal</b></div>
+      <div className="sugg-big"><span>Suggested target</span><b className="num">${fmt(sug.kcal)} kcal</b></div>
+      <div className="sugg-macros num"><b className="p">P ${sug.protein} g</b><b className="c">C ${sug.carbs} g</b><b className="f">F ${sug.fat} g</b></div>
+    </div>
+    <p className="hint">This is a starting estimate from the Mifflin-St Jeor formula. Real needs vary, so watch your 7-day average weight for two to three weeks and adjust by about 100–200 kcal if it isn’t moving the way you want.</p>
+    <button className="btn ghost block press" onClick=${() => onUse(sug)}>Use these numbers</button>
+  </div>`;
+}
+
 function TargetsSheet({ onClose }) {
   const { state, dispatch, notify } = useApp();
   const p = state.profile;
   const [f, setF] = useState({ kcal: String(p.kcal), protein: String(p.protein), carbs: String(p.carbs), fat: String(p.fat), water: String(p.water) });
   const [err, setErr] = useState('');
-  const macroKcal = num(f.protein) * 4 + num(f.carbs) * 4 + num(f.fat) * 9;
-  const diff = macroKcal - num(f.kcal);
+  const [calc, setCalc] = useState(false);
+  const macroK = macroKcal(num(f.protein), num(f.carbs), num(f.fat));
+  const diff = macroK - num(f.kcal);
   const save = close => {
     const v = Object.fromEntries(Object.entries(f).map(([k, x]) => [k, num(x)]));
     if (v.kcal < 800 || v.kcal > 6000) return setErr('Set calories between 800 and 6,000 kcal.');
@@ -1610,6 +1738,7 @@ function TargetsSheet({ onClose }) {
     dispatch({ type: 'setProfile', profile: { kcal: Math.round(v.kcal), protein: Math.round(v.protein), carbs: Math.round(v.carbs), fat: Math.round(v.fat), water: Math.round(v.water) } });
     notify('Targets saved'); close();
   };
+  const use = sug => { setF({ ...f, kcal: String(sug.kcal), protein: String(sug.protein), carbs: String(sug.carbs), fat: String(sug.fat) }); setCalc(false); setErr(''); };
   return html`<${Sheet} title="Daily targets" onClose=${onClose} lead="Your calorie target stays fixed. Exercise never changes it automatically.">
     ${close => html`<div>
       <${NumField} label="Calories" unit="kcal" value=${f.kcal} onChange=${v => setF({ ...f, kcal: v })} />
@@ -1619,9 +1748,11 @@ function TargetsSheet({ onClose }) {
         <${NumField} label="Fat" unit="g" value=${f.fat} onChange=${v => setF({ ...f, fat: v })} />
         <${NumField} label="Water" unit="ml" value=${f.water} onChange=${v => setF({ ...f, water: v })} />
       </div>
-      <p className="hint">Your macros add up to ${fmt(macroKcal)} kcal (4 per g of protein and carbs, 9 per g of fat)${Math.abs(diff) >= 50 ? `, ${fmt(Math.abs(diff))} kcal ${diff > 0 ? 'above' : 'below'} your calorie target.` : ', in line with your calorie target.'}</p>
+      <p className="hint">Your macros add up to ${fmt(macroK)} kcal (4 per g of protein and carbs, 9 per g of fat)${Math.abs(diff) >= 50 ? `, ${fmt(Math.abs(diff))} kcal ${diff > 0 ? 'above' : 'below'} your calorie target.` : ', in line with your calorie target.'}${num(p.weight) > 0 && num(f.protein) > 0 ? ` Protein works out to ${fmt1(num(f.protein) / p.weight)} g per kg.` : ''}</p>
       ${err && html`<p className="err"><${Icon} name="alert" size=${15} />${err}</p>`}
       <div className="actions"><button className="btn primary press" onClick=${() => save(close)}>Save targets</button></div>
+      <button className="link press" style=${{ margin: '16px 0 4px' }} onClick=${() => setCalc(!calc)}><${Icon} name=${calc ? 'minus' : 'plus'} size=${15} />${calc ? 'Hide calculator' : 'Help me work out my targets'}</button>
+      ${calc && html`<${TargetCalculator} profile=${p} onUse=${use} />`}
     </div>`}
   <//>`;
 }
@@ -1781,6 +1912,7 @@ function ResultItem({ it, index, onChange, onRemove }) {
         <input className="inp num" inputMode="decimal" aria-label=${l} value=${it[k]} onChange=${e => onChange(withNutrient(it, k, e.target.value))} />
         <label style=${{ marginTop: 5 }}>${l}${k === 'kcal' ? '' : ' g'}</label></div>`)}
     </div>
+    <div style=${{ marginTop: 10 }}><${EnergyHint} kcal=${num(it.kcal)} p=${num(it.protein)} c=${num(it.carbs)} f=${num(it.fat)} /></div>
   </div>`;
 }
 
