@@ -409,6 +409,49 @@ div.row{cursor:default}
 .sugg-macros .p{color:var(--mint)}.sugg-macros .c{color:var(--gold)}.sugg-macros .f{color:var(--coral)}
 
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* stage 4 */
+.search{position:relative;margin-bottom:6px}
+.search .inp{padding-left:42px;-webkit-appearance:none;appearance:none}
+.search .inp::-webkit-search-cancel-button{filter:invert(.6)}
+.search-ic{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--mute);pointer-events:none}
+.fsec{margin-top:16px}
+.fsec-head{display:flex;justify-content:space-between;align-items:baseline;margin:0 4px 8px}
+.fsec-head h4{font-size:15px;font-weight:650}
+.fsec-head span{font-size:12px;color:var(--mute)}
+.fsec .group{margin-bottom:0}
+.food-row{width:100%;display:flex;align-items:center;gap:10px;padding:12px 14px;text-align:left;min-height:58px}
+.food-row+.food-row{border-top:1px solid var(--line)}
+.fr-kc{text-align:right;font-size:16px;font-weight:600;flex:none}
+.fr-kc small{display:block;font-size:11px;color:var(--mute);font-weight:500;font-family:var(--sans)}
+.src{font-size:11px;font-weight:650;border-radius:6px;padding:1px 6px}
+.src-mal{color:var(--lime);background:var(--lime-soft)}
+.src-usda{color:var(--aqua);background:rgba(108,199,255,.12)}
+.src-custom{color:var(--gold);background:rgba(242,210,122,.12)}
+.fav-dot{color:var(--gold);display:inline-block;margin-right:5px;vertical-align:-1px}
+.skel-row{padding:10px 14px}.skel-row .skel{height:38px;border-radius:10px;margin:0}
+.back{margin:-6px 0 10px}
+.detail-head{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.detail-head h3{font-size:21px;font-weight:700;letter-spacing:-.015em;line-height:1.25}
+.fav-btn{flex:none;color:var(--mute)}
+.fav-btn.on{color:var(--gold);background:rgba(242,210,122,.12);border-color:rgba(242,210,122,.3)}
+.src-box{background:var(--s1);border:1px solid var(--line);border-radius:16px;padding:10px 12px;margin-bottom:14px}
+.src-box>div{display:flex;gap:8px;align-items:center}
+.src-box p{font-size:13px;color:var(--mute);line-height:1.45;margin-top:6px}
+.ver{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--mute)}
+.chips-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.chip2{height:34px;padding:0 13px;border-radius:999px;background:var(--s2);border:1px solid var(--line2);font-size:13px;font-weight:600;color:var(--text)}
+.chip2.on{background:var(--lime);color:var(--lime-ink);border-color:var(--lime)}
+.nut-card{display:flex;align-items:center;gap:16px;background:var(--s1);border:1px solid var(--line);border-radius:20px;padding:14px 16px;margin-bottom:14px}
+.nut-big b{font-size:34px;font-weight:700;line-height:1}
+.nut-big span{display:block;font-size:13px;color:var(--mute);margin-top:2px}
+.nut-macros{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;border-left:1px solid var(--line);padding-left:14px}
+.nut-macros b{display:block;font-size:16px;font-weight:650}
+.nut-macros span{font-size:12px;color:var(--mute)}
+.check{display:flex;gap:10px;align-items:center;font-size:15px;margin:0 2px 14px;cursor:pointer}
+.check input{width:22px;height:22px;accent-color:var(--lime);flex:none}
+.a{color:var(--lime);font-weight:600;text-decoration:none}
+.sheet.tall{min-height:86vh}
 </style>
 </head>
 <body>
@@ -717,7 +760,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
 <script>/* htm 3.1.1 (Apache-2.0) */!function(n,e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e():"function"==typeof define&&define.amd?define(e):n.htm=e()}(this,function(){var n=function(e,t,u,s){var r;t[0]=0;for(var p=1;p<t.length;p++){var h=t[p++],o=t[p]?(t[0]|=h?1:2,u[t[p++]]):t[++p];3===h?s[0]=o:4===h?s[1]=Object.assign(s[1]||{},o):5===h?(s[1]=s[1]||{})[t[++p]]=o:6===h?s[1][t[++p]]+=o+"":h?(r=e.apply(o,n(e,o,u,["",null])),s.push(r),o[0]?t[0]|=2:(t[p-2]=0,t[p]=r)):s.push(o)}return s},e=new Map;return function(t){var u=e.get(this);return u||(u=new Map,e.set(this,u)),(u=n(this,u.get(t)||(u.set(t,u=function(n){for(var e,t,u=1,s="",r="",p=[0],h=function(n){1===u&&(n||(s=s.replace(/^\s*\n\s*|\s*\n\s*$/g,"")))?p.push(0,n,s):3===u&&(n||s)?(p.push(3,n,s),u=2):2===u&&"..."===s&&n?p.push(4,n,0):2===u&&s&&!n?p.push(5,0,!0,s):u>=5&&((s||!n&&5===u)&&(p.push(u,0,s,t),u=6),n&&(p.push(u,n,0,t),u=6)),s=""},o=0;o<n.length;o++){o&&(1===u&&h(),h(o));for(var f=0;f<n[o].length;f++)e=n[o][f],1===u?"<"===e?(h(),p=[p],u=3):s+=e:4===u?"--"===s&&">"===e?(u=1,s=""):s=e+s[0]:r?e===r?r="":s+=e:'"'===e||"'"===e?r=e:">"===e?(h(),u=1):u&&("="===e?(u=5,t=s,s=""):"/"===e&&(u<5||">"===n[o][f+1])?(h(),3===u&&(p=p[0]),u=p,(p=p[0]).push(2,0,u),u=0):" "===e||"\t"===e||"\n"===e||"\r"===e?(h(),u=2):s+=e),3===u&&"!--"===s&&(u=4,p=p[0])}return h(),p}(t)),u),arguments,[])).length>1?u:u[0]}});
 </script>
 <script>
-/* FitFuel AI — Stage 3: UI, on-device storage, nutrition calculations */
+/* FitFuel AI — Stage 4: UI, storage, calculations, food database and search */
 const { useState, useEffect, useRef, useMemo, useCallback, createContext, useContext, useReducer } = React;
 const html = htm.bind(React.createElement);
 
@@ -844,6 +887,114 @@ function suggestTargets(p, activity, goalId, proteinPerKg) {
   return { bmr: Math.round(b), maintenance: Math.round(maintenance), kcal, protein, fat, carbs };
 }
 
+/* ---------------- Malaysian food database (Stage 4) ----------------
+   Values per 100 g edible portion, copied from published Malaysian sources.
+   Mixed dishes are lab analyses of specific samples: stall recipes and portions vary. */
+const SRC = {
+  myfcd: { label: 'MyFCD, Ministry of Health Malaysia (1997 table)', note: 'Official Malaysian food composition value.' },
+  tee89: { label: 'IMR lab analysis, Tee et al. 1989', note: 'Lab analysis of samples from school canteens in Selangor. Recipes and portions at other stalls can differ.' },
+  ukm20: { label: 'UKM lab analysis, Mohd Tarmizi et al. 2020', note: 'Lab analysis of restaurant samples in Bangi and Kajang. Recipes and portions at other stalls can differ.' },
+  dora18: { label: 'Dora et al. 2018, Sains Malaysiana', note: 'Lab analysis of samples from Peninsular Malaysia. Recipes and portions at other stalls can differ.' },
+  nik11: { label: 'Nik Shanita et al. 2011, Sains Malaysiana', note: 'Lab analysis of samples. Recipes and portions at other stalls can differ.' },
+};
+/* [id, name, aliases, category, src, kcal, protein, carbs, fat, typical serving g (from the same or a cited Malaysian source) or 0] */
+const MAL_ROWS = [
+  ['nasi-putih', 'White rice, cooked (nasi putih)', ['nasi', 'rice', 'steamed rice'], 'Rice', 'myfcd', 130.1, 2.3, 30.0, 0.1, 0],
+  ['santan', 'Coconut milk (santan)', ['santan kelapa', 'coconut milk'], 'Ingredients', 'myfcd', 278, 2.8, 2.9, 28.3, 0],
+  ['nasi-lemak', 'Nasi lemak (with sambal, ikan bilis, egg, cucumber)', ['coconut rice', 'nasi lemak biasa'], 'Rice dishes', 'dora18', 189, 4.11, 31.01, 5.42, 230],
+  ['nasi-ayam', 'Nasi ayam (chicken rice, with soup and sauces)', ['chicken rice', 'nasi ayam hainan'], 'Rice dishes', 'ukm20', 153.99, 4.96, 23.56, 2.40, 250],
+  ['nasi-goreng-pattaya', 'Nasi goreng Pattaya', ['pattaya fried rice', 'nasi pattaya'], 'Rice dishes', 'ukm20', 192.20, 6.43, 26.24, 6.85, 320],
+  ['nasi-goreng-cina', 'Nasi goreng Cina (Chinese fried rice)', ['chinese fried rice', 'nasi goreng', 'fried rice'], 'Rice dishes', 'ukm20', 207.32, 3.28, 33.65, 6.48, 180],
+  ['roti-canai', 'Roti canai with dhal', ['roti kosong', 'prata', 'roti canai kuah dal'], 'Breads', 'nik11', 169.13, 6.28, 32.84, 2.47, 95],
+  ['roti-telur', 'Roti telur with dhal', ['egg roti canai', 'roti canai telur'], 'Breads', 'ukm20', 156.99, 6.42, 24.86, 3.53, 135],
+  ['thosai', 'Thosai with dhal and chutney', ['tosai', 'dosa', 'thosai kosong'], 'Breads', 'ukm20', 182.43, 4.60, 30.29, 4.75, 80],
+  ['bihun-goreng', 'Bihun goreng (fried rice vermicelli)', ['mee hoon goreng', 'fried bihun', 'fried mee hoon'], 'Noodles', 'dora18', 177, 3.11, 24.20, 7.52, 170],
+  ['char-kuey-teow', 'Char kuey teow', ['char kway teow', 'kuey teow goreng cina', 'ckt'], 'Noodles', 'ukm20', 147.38, 3.79, 23.24, 4.37, 220],
+  ['kuey-teow-goreng', 'Kuey teow goreng (school canteen style)', ['fried kuey teow', 'fried kuih tiau'], 'Noodles', 'tee89', 170, 5.7, 22.5, 6.4, 200],
+  ['mee-goreng', 'Mee goreng (fried yellow noodles)', ['fried mee', 'fried noodles', 'fried yellow noodles'], 'Noodles', 'tee89', 154.5, 5.15, 28.1, 2.35, 139],
+  ['mee-hokkien', 'Mee Hokkien goreng', ['hokkien fried noodles', 'hokkien mee'], 'Noodles', 'ukm20', 158.67, 5.51, 21.06, 4.75, 480],
+  ['mee-sup', 'Mee sup (noodle soup, with broth)', ['mee soup', 'noodle soup'], 'Noodles', 'tee89', 68, 3.6, 7.5, 2.6, 563],
+  ['burger-ayam', 'Chicken burger (stall)', ['burger ayam', 'ramly ayam'], 'Fast food', 'ukm20', 235.43, 7.57, 26.68, 11.02, 156],
+  ['karipap', 'Karipap (curry puff)', ['curry puff', 'epok epok'], 'Kuih', 'tee89', 330, 4.7, 44.8, 14.7, 22],
+  ['pisang-goreng', 'Pisang goreng', ['goreng pisang', 'banana fritter', 'fried banana'], 'Kuih', 'tee89', 184, 1.8, 39.5, 2.1, 65],
+  ['cucur-pisang', 'Cucur pisang (cokodok)', ['jemput jemput', 'cokodok pisang', 'banana cake fritter'], 'Kuih', 'tee89', 254, 3.9, 45.4, 6.3, 71],
+  ['cucur-badak', 'Cucur badak', ['cucur'], 'Kuih', 'tee89', 238, 5.5, 39.2, 6.6, 29],
+  ['kuih-udang', 'Kuih udang (cucur udang)', ['cucur udang', 'prawn fritter'], 'Kuih', 'tee89', 248, 5.5, 36.9, 8.7, 30],
+  ['kuih-keria', 'Kuih keria', ['sweet potato donut'], 'Kuih', 'tee89', 236, 2.6, 47.7, 3.9, 38],
+  ['kuih-lapis', 'Kuih lapis', ['layer cake kuih'], 'Kuih', 'tee89', 146, 3.0, 32.2, 0.6, 55],
+  ['seri-muka', 'Kuih seri muka', ['sri muka'], 'Kuih', 'tee89', 177, 3.5, 35.0, 2.6, 53],
+  ['pulut-panggang', 'Pulut panggang (pulut udang)', ['pulut udang', 'grilled glutinous rice'], 'Kuih', 'tee89', 219, 4.0, 40.5, 4.6, 74],
+  ['lepat-pisang', 'Lepat pisang', ['steamed banana cake'], 'Kuih', 'tee89', 158, 3.2, 34.8, 0.7, 90],
+  ['bubur-kacang-merah', 'Bubur kacang merah', ['red bean soup', 'red bean dessert'], 'Desserts', 'tee89', 44, 1.6, 9.2, 0.1, 230],
+];
+const MAL_FOODS = MAL_ROWS.map(([id, name, aliases, category, src, kcal, protein, carbs, fat, serving]) => ({
+  id: 'mal:' + id, db: 'mal', name, aliases, category, srcKey: src, source: SRC[src].label, note: SRC[src].note,
+  per100: { kcal, protein, carbs, fat }, serving: serving ? { label: '1 typical serving', g: serving, note: 'Typical serving weight from the same study or Malaysian survey references.' } : null, verified: true,
+}));
+const DB_LABEL = { mal: 'Malaysian', usda: 'USDA', custom: 'My food' };
+const sourceLabel = s => ({ 'scan-demo': 'Scan (demo)', manual: 'Manual', mal: 'Malaysian database', usda: 'USDA', custom: 'My food' }[s] || s);
+
+const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
+function searchFoods(q, list) {
+  const n = norm(q);
+  if (!n) return [];
+  const toks = n.split(' ');
+  return list.map(f => {
+    const names = [f.name, ...(f.aliases || [])].map(norm);
+    const hay = names.join(' | ');
+    if (!toks.every(t => hay.includes(t))) return null;
+    const score = (names[0].startsWith(n) ? 4 : 0) + (names.slice(1).some(a => a.startsWith(n)) ? 3 : 0)
+      + (names.some(a => a.split(' ').some(w => w.startsWith(toks[0]))) ? 1 : 0) + (f.db === 'custom' ? 0.5 : 0) + (f.db === 'mal' ? 0.3 : 0);
+    return { f, score };
+  }).filter(Boolean).sort((a, b) => b.score - a.score || a.f.name.localeCompare(b.f.name)).map(x => x.f);
+}
+
+/* ---------------- USDA FoodData Central ---------------- */
+const USDA_BASE = 'https://api.nal.usda.gov/fdc/v1/foods/search';
+function parseUsdaFood(x) {
+  if (!x || !x.fdcId || typeof x.description !== 'string') return null;
+  const ns = Array.isArray(x.foodNutrients) ? x.foodNutrients : [];
+  const val = (ids, nums, unit) => {
+    for (let i = 0; i < ids.length; i++) {
+      const n = ns.find(n => (n.nutrientId === ids[i] || String(n.nutrientNumber) === nums[i]) && (!unit || String(n.unitName || '').toUpperCase() === unit));
+      if (n && typeof n.value === 'number' && Number.isFinite(n.value)) return n.value;
+    }
+    return null;
+  };
+  const protein = val([1003], ['203']), fat = val([1004], ['204']), carbs = val([1005], ['205']);
+  let kcal = val([1008, 2047, 2048], ['208', '957', '958'], 'KCAL');
+  let energyCalc = false;
+  if (protein == null || fat == null || carbs == null) return null;
+  if (kcal == null) { kcal = macroKcal(protein, carbs, fat); energyCalc = true; }
+  const name = x.description.charAt(0) + x.description.slice(1);
+  return {
+    id: 'usda:' + x.fdcId, db: 'usda', fdcId: x.fdcId, name, aliases: [], category: typeof x.foodCategory === 'string' ? x.foodCategory : '',
+    dataType: x.dataType || '', source: `USDA FoodData Central${x.dataType ? `, ${x.dataType}` : ''}`,
+    note: x.dataType === 'Survey (FNDDS)' ? 'Average US recipe. Malaysian versions may differ.' : 'Generic US reference value.',
+    per100: { kcal: r1(kcal), protein: r1(protein), carbs: r1(carbs), fat: r1(fat) }, energyCalc, serving: null, verified: true,
+  };
+}
+async function usdaSearch(q, key, signal) {
+  const e = encodeURIComponent;
+  const params = `api_key=${e(key || 'DEMO_KEY')}&query=${e(q)}&pageSize=40`;
+  let res = await fetch(`${USDA_BASE}?${params}&dataType=${e('Foundation,SR Legacy,Survey (FNDDS)')}`, { signal });
+  if (res.status === 400) res = await fetch(`${USDA_BASE}?${params}`, { signal });
+  if (res.status === 429) throw new Error('rate');
+  if (res.status === 401 || res.status === 403) throw new Error('key');
+  if (!res.ok) throw new Error('http');
+  const data = await res.json();
+  const seen = new Set();
+  return (Array.isArray(data.foods) ? data.foods : []).filter(x => x && x.dataType !== 'Branded').map(parseUsdaFood).filter(Boolean)
+    .filter(f => { const k = norm(f.name); if (seen.has(k)) return false; seen.add(k); return true; }).slice(0, 25);
+}
+const usdaErrorText = e => {
+  if (e && e.name === 'AbortError') return '';
+  if (!navigator.onLine || (e && e.name === 'TypeError')) return 'You’re offline or USDA can’t be reached. Malaysian dishes and your saved foods still work.';
+  if (e && e.message === 'rate') return 'USDA’s hourly search limit has been reached. Add your free USDA key in Settings → Food database for more searches.';
+  if (e && e.message === 'key') return 'USDA didn’t accept the API key. Check it in Settings → Food database.';
+  return 'USDA search isn’t responding right now. Try again in a moment.';
+};
+
 /* ---------------- icons (Lucide-style, inlined so they work offline) ---------------- */
 const P = d => ['path', d];
 const C = (cx, cy, r) => ['circle', cx, cy, r];
@@ -880,6 +1031,10 @@ const ICONS = {
   moon: [P('M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z')],
   apple: [P('M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z'), P('M10 2c1 .5 2 2 2 5')],
   zap: [P('M13 2 3 14h9l-1 8 10-12h-9l1-8z')],
+  search: [C(11, 11, 8), P('m21 21-4.3-4.3')],
+  star: [P('M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z')],
+  globe: [C(12, 12, 10), P('M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20'), P('M2 12h20')],
+  key: [P('m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4'), P('m21 2-9.6 9.6'), C(7.5, 15.5, 5.5)],
 };
 function Icon({ name, size = 22, stroke = 2 }) {
   const els = ICONS[name] || [];
@@ -893,7 +1048,7 @@ function Icon({ name, size = 22, stroke = 2 }) {
 
 /* ---------------- state ---------------- */
 const DEFAULT_PROFILE = { name: '', age: 34, gender: 'Male', height: 169, weight: 70, targetWeight: '', kcal: 2000, protein: 120, carbs: 230, fat: 60, water: 2500 };
-const INITIAL = { profile: DEFAULT_PROFILE, entries: [], water: {}, weights: [] };
+const INITIAL = { profile: DEFAULT_PROFILE, entries: [], water: {}, weights: [], foods: [], favorites: [] };
 
 function reducer(s, a) {
   switch (a.type) {
@@ -910,6 +1065,10 @@ function reducer(s, a) {
       return { ...s, weights, profile: { ...s.profile, weight: weights[weights.length - 1].kg } };
     }
     case 'deleteWeight': return { ...s, weights: s.weights.filter(w => w.date !== a.date) };
+    case 'saveFood': return { ...s, foods: [...s.foods.filter(f => f.id !== a.food.id), a.food] };
+    case 'deleteFood': return { ...s, foods: s.foods.filter(f => f.id !== a.id), favorites: s.favorites.filter(x => x !== a.id) };
+    case 'toggleFav': return { ...s, favorites: s.favorites.includes(a.id) ? s.favorites.filter(x => x !== a.id) : [...s.favorites, a.id] };
+    case 'deleteFoods': return { ...s, foods: s.foods.filter(f => !a.ids.includes(f.id)) };
     case 'reset': return INITIAL;
     default: return s;
   }
@@ -917,7 +1076,7 @@ function reducer(s, a) {
 /* ---------------- on-device storage (IndexedDB) ---------------- */
 const DB_NAME = 'fitfuel-ai', DB_VERSION = 1;
 const STORES = ['profile', 'entries', 'water', 'weights', 'favorites', 'foods', 'meta'];
-const DATA_STORES = ['profile', 'entries', 'water', 'weights', 'favorites'];
+const DATA_STORES = ['profile', 'entries', 'water', 'weights', 'favorites', 'foods'];
 const waterToList = w => Object.entries(w).filter(([, ml]) => ml > 0).map(([date, ml]) => ({ date, ml }));
 
 const DB = (() => {
@@ -954,11 +1113,12 @@ const DB = (() => {
     load: () => run(STORES, 'readonly', t => {
       const o = {};
       const get = (name, key) => { const r = key ? t.objectStore(name).get(key) : t.objectStore(name).getAll(); r.onsuccess = () => { o[name] = r.result; }; };
-      get('profile', 'main'); get('entries'); get('water'); get('weights'); get('meta');
+      get('profile', 'main'); get('entries'); get('water'); get('weights'); get('meta'); get('foods'); get('favorites');
       return o;
     }),
     put: (name, items) => run([name], 'readwrite', t => putAll(t, name, items)),
     del: (name, keys) => run([name], 'readwrite', t => { const s = t.objectStore(name); keys.forEach(k => s.delete(k)); }),
+    delFood: id => run(['foods', 'favorites'], 'readwrite', t => { t.objectStore('foods').delete(id); t.objectStore('favorites').delete(id); }),
     saveProfile: p => run(['profile'], 'readwrite', t => { t.objectStore('profile').put(p, 'main'); }),
     saveWeight: (w, p) => run(['weights', 'profile'], 'readwrite', t => { t.objectStore('weights').put(w); t.objectStore('profile').put(p, 'main'); }),
     setMeta: (key, value) => run(['meta'], 'readwrite', t => { t.objectStore('meta').put({ key, value }); }),
@@ -970,6 +1130,8 @@ const DB = (() => {
       putAll(t, 'entries', s.entries);
       putAll(t, 'water', waterToList(s.water));
       putAll(t, 'weights', s.weights);
+      putAll(t, 'foods', s.foods || []);
+      putAll(t, 'favorites', (s.favorites || []).map(id => ({ id, addedAt: Date.now() })));
     }),
   };
 })();
@@ -985,6 +1147,8 @@ function stateFromDB(o) {
       entries: (o.entries || []).sort((a, b) => a.createdAt - b.createdAt),
       water,
       weights: (o.weights || []).sort((a, b) => a.date < b.date ? -1 : 1),
+      foods: o.foods || [],
+      favorites: (o.favorites || []).sort((a, b) => a.addedAt - b.addedAt).map(f => f.id),
     },
     meta,
   };
@@ -999,6 +1163,10 @@ function persistAction(a, next) {
     case 'setProfile': return DB.saveProfile(next.profile);
     case 'logWeight': return DB.saveWeight({ date: a.date, kg: a.kg }, next.profile);
     case 'deleteWeight': return DB.del('weights', [a.date]);
+    case 'saveFood': return DB.put('foods', [a.food]);
+    case 'deleteFood': return DB.delFood(a.id);
+    case 'toggleFav': return next.favorites.includes(a.id) ? DB.put('favorites', [{ id: a.id, addedAt: Date.now() }]) : DB.del('favorites', [a.id]);
+    case 'deleteFoods': return DB.del('foods', a.ids);
     case 'reset': return DB.clearAll();
     default: return Promise.resolve();
   }
@@ -1016,14 +1184,14 @@ const daysSince = ts => ts ? Math.floor((Date.now() - ts) / 86400000) : 0;
 const relDays = ts => { if (!ts) return 'never'; const d = daysSince(ts); return d === 0 ? 'today' : d === 1 ? 'yesterday' : `${d} days ago`; };
 
 /* ---------------- backup, restore, CSV ---------------- */
-const BACKUP_VERSION = 1;
+const BACKUP_VERSION = 2;
 const isDateKey = s => typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s);
 const okNum = (v, lo, hi) => typeof v === 'number' && Number.isFinite(v) && v >= lo && v <= hi;
 
 function makeBackup(s) {
   return JSON.stringify({
     app: 'FitFuel AI', version: BACKUP_VERSION, exportedAt: new Date().toISOString(),
-    profile: s.profile, entries: s.entries, water: waterToList(s.water), weights: s.weights,
+    profile: s.profile, entries: s.entries, water: waterToList(s.water), weights: s.weights, foods: s.foods, favorites: s.favorites,
   });
 }
 function cleanProfile(p) {
@@ -1045,9 +1213,22 @@ function cleanEntry(e) {
     id: typeof e.id === 'string' && e.id ? e.id.slice(0, 64) : uid(), date: e.date, meal: e.meal, name: e.name.trim().slice(0, 120),
     grams: e.grams, kcal: e.kcal, protein: e.protein, carbs: e.carbs, fat: e.fat, per100,
     source: typeof e.source === 'string' ? e.source.slice(0, 20) : 'manual', estimate: !!e.estimate,
+    foodId: typeof e.foodId === 'string' ? e.foodId.slice(0, 64) : undefined,
     createdAt: okNum(e.createdAt, 0, 1e14) ? e.createdAt : Date.now(),
   };
 }
+function cleanFood(f) {
+  if (!f || typeof f !== 'object' || typeof f.id !== 'string' || !/^(my|usda):/.test(f.id) || !['custom', 'usda'].includes(f.db)) return null;
+  if (typeof f.name !== 'string' || !f.name.trim() || !f.per100 || !NUTS.every(k => okNum(f.per100[k], 0, 10000))) return null;
+  const str = (v, n) => typeof v === 'string' ? v.slice(0, n) : '';
+  return {
+    id: f.id.slice(0, 64), db: f.db, name: f.name.trim().slice(0, 120), aliases: [], category: str(f.category, 60), source: str(f.source, 120), note: str(f.note, 200),
+    dataType: str(f.dataType, 40), fdcId: okNum(f.fdcId, 0, 1e12) ? f.fdcId : undefined,
+    per100: Object.fromEntries(NUTS.map(k => [k, f.per100[k]])), energyCalc: !!f.energyCalc, serving: null, verified: f.db === 'usda',
+    usedAt: okNum(f.usedAt, 0, 1e14) ? f.usedAt : 0, uses: okNum(f.uses, 0, 1e7) ? f.uses : 0, createdAt: okNum(f.createdAt, 0, 1e14) ? f.createdAt : Date.now(),
+  };
+}
+
 function parseBackup(text) {
   let d;
   try { d = JSON.parse(text); } catch (_) { throw new Error('This file can’t be read as a backup. Choose a .json file made by FitFuel AI.'); }
@@ -1062,8 +1243,13 @@ function parseBackup(text) {
   const wmap = new Map();
   (Array.isArray(d.weights) ? d.weights : []).forEach(w => { if (w && isDateKey(w.date) && okNum(w.kg, 20, 400)) wmap.set(w.date, { date: w.date, kg: w.kg }); });
   const weights = [...wmap.values()].sort((a, b) => a.date < b.date ? -1 : 1);
+  const fmap = new Map();
+  (Array.isArray(d.foods) ? d.foods : []).map(cleanFood).filter(Boolean).forEach(f => fmap.set(f.id, f));
+  const foods = [...fmap.values()];
+  const knownIds = new Set([...foods.map(f => f.id), ...MAL_FOODS.map(f => f.id)]);
+  const favorites = [...new Set((Array.isArray(d.favorites) ? d.favorites : []).filter(id => typeof id === 'string' && knownIds.has(id)))];
   return {
-    state: { profile: cleanProfile(d.profile), entries, water, weights },
+    state: { profile: cleanProfile(d.profile), entries, water, weights, foods, favorites },
     skipped: rawE.length - entries.length,
     exportedAt: typeof d.exportedAt === 'string' ? d.exportedAt : null,
   };
@@ -1081,7 +1267,7 @@ const mealOrder = id => MEALS.findIndex(m => m.id === id);
 function csvFoodLog(s) {
   const list = [...s.entries].sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : mealOrder(a.meal) - mealOrder(b.meal) || a.createdAt - b.createdAt);
   return toCSV([['Date', 'Meal', 'Food', 'Grams', 'Calories (kcal)', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Source', 'Estimate'],
-    ...list.map(e => [e.date, mealLabel(e.meal), e.name, e.grams, e.kcal, e.protein, e.carbs, e.fat, e.source === 'scan-demo' ? 'Scan (demo)' : e.source === 'manual' ? 'Manual' : e.source, e.estimate ? 'Yes' : 'No'])]);
+    ...list.map(e => [e.date, mealLabel(e.meal), e.name, e.grams, e.kcal, e.protein, e.carbs, e.fat, sourceLabel(e.source), e.estimate ? 'Yes' : 'No'])]);
 }
 function csvDaily(s) {
   const dates = [...new Set([...s.entries.map(e => e.date), ...Object.keys(s.water).filter(k => s.water[k] > 0), ...s.weights.map(w => w.date)])].sort();
@@ -1564,7 +1750,7 @@ function Settings() {
     <p className="group-title">Food scanner</p>
     <div className="group">
       <${Row} icon="sparkles" label="AI provider" sub="Sample results only until an AI service is connected" badge=${{ text: 'Demo mode', tone: 'coral' }} onClick=${openScan} />
-      <${Row} icon="database" label="Food database" sub="USDA and Malaysian foods" badge=${{ text: 'Stage 4' }} disabled />
+      <${Row} icon="database" label="Food database" sub=${`${MAL_FOODS.length} Malaysian dishes, USDA search, ${state.foods.filter(f => f.db === 'custom').length} of your own`} onClick=${() => openSheet('foodDb')} />
     </div>
 
     <p className="group-title">Your data</p>
@@ -1584,13 +1770,13 @@ function Settings() {
 }
 
 /* ---------------- Sheets ---------------- */
-function Sheet({ title, onClose, children, lead }) {
+function Sheet({ title, onClose, children, lead, tall }) {
   const [closing, setClosing] = useState(false);
   const close = useCallback(() => { setClosing(true); setTimeout(onClose, 200); }, [onClose]);
   useEffect(() => { document.body.classList.add('lock'); return () => document.body.classList.remove('lock'); }, []);
   return html`<div className=${closing ? 'closing' : ''}>
     <div className="backdrop" onClick=${close}></div>
-    <div className="sheet" role="dialog" aria-modal="true" aria-label=${title}>
+    <div className=${'sheet' + (tall ? ' tall' : '')} role="dialog" aria-modal="true" aria-label=${title}>
       <div className="grab"></div>
       <div className="sheet-head"><h2>${title}</h2><button className="round-btn press" aria-label="Close" onClick=${close}><${Icon} name="x" size=${17} /></button></div>
       ${lead && html`<p className="lead">${lead}</p>`}
@@ -1615,7 +1801,7 @@ function EnergyHint({ kcal, p, c, f }) {
   return html`<p className="warn"><${Icon} name="alert" size=${15} /><span>The macros add up to about ${fmt(chk.macroK)} kcal, but calories say ${fmt(kcal)}. One of the numbers may be off.</span></p>`;
 }
 
-function FoodForm({ initial, submitLabel, onSubmit, children }) {
+function FoodForm({ initial, submitLabel, onSubmit, children, before }) {
   const [f, setF] = useState(() => ({ name: '', meal: mealForNow(), grams: '', kcal: '', protein: '', carbs: '', fat: '', per100: null, ...initial }));
   const [err, setErr] = useState('');
   const submit = () => { const e = validateFood(f); if (e) { setErr(e); return; } onSubmit(f); };
@@ -1632,19 +1818,228 @@ function FoodForm({ initial, submitLabel, onSubmit, children }) {
     </div>
     ${f.per100 && num(f.grams) > 0 && html`<p className="hint">Change the portion and the nutrition rescales automatically.</p>`}
     <${EnergyHint} kcal=${num(f.kcal)} p=${num(f.protein)} c=${num(f.carbs)} f=${num(f.fat)} />
+    ${before}
     ${err && html`<p className="err"><${Icon} name="alert" size=${15} />${err}</p>`}
     <div className="actions"><button className="btn primary press" onClick=${submit}>${submitLabel}</button></div>
     ${children}
   </div>`;
 }
 
-function AddFoodSheet({ meal, onClose }) {
+function Section({ title, sub, children }) {
+  return html`<div className="fsec">
+    <div className="fsec-head"><h4>${title}</h4>${sub && html`<span>${sub}</span>`}</div>
+    <div className="group">${children}</div>
+  </div>`;
+}
+
+function FoodRow({ food, onClick, fav }) {
+  return html`<button className="food-row press" onClick=${onClick}>
+    <div className="entry-main">
+      <div className="entry-name">${fav && html`<span className="fav-dot"><${Icon} name="star" size=${12} /></span>`}${food.name}</div>
+      <div className="entry-sub"><span className=${'src src-' + food.db}>${DB_LABEL[food.db] || 'Food'}</span>${food.category && html`<span>${food.category}</span>`}</div>
+    </div>
+    <div className="fr-kc num">${fmt(food.per100.kcal)}<small>kcal / 100 g</small></div>
+  </button>`;
+}
+
+function FoodSearchSheet({ meal, onClose }) {
+  const { state, meta } = useApp();
+  const [q, setQ] = useState('');
+  const [view, setView] = useState({ name: 'search' });
+  const [usda, setUsda] = useState({ status: 'idle', q: '', results: [], error: '' });
+  const abortRef = useRef(null);
+  useEffect(() => () => { if (abortRef.current) abortRef.current.abort(); }, []);
+  const all = useMemo(() => [...MAL_FOODS, ...state.foods], [state.foods]);
+  const byId = useMemo(() => new Map(all.map(f => [f.id, f])), [all]);
+  const local = useMemo(() => searchFoods(q, all), [q, all]);
+  const favs = state.favorites.map(id => byId.get(id)).filter(Boolean);
+  const recents = useMemo(() => {
+    const out = [], seen = new Set();
+    for (const e of [...state.entries].sort((a, b) => b.createdAt - a.createdAt)) {
+      const f = e.foodId && byId.get(e.foodId);
+      if (f && !seen.has(f.id) && !state.favorites.includes(f.id)) { seen.add(f.id); out.push(f); }
+      if (out.length >= 6) break;
+    }
+    return out;
+  }, [state.entries, state.favorites, byId]);
+  const term = q.trim();
+  const runUsda = async () => {
+    if (term.length < 2) return;
+    if (abortRef.current) abortRef.current.abort();
+    const ctrl = new AbortController();
+    abortRef.current = ctrl;
+    setUsda({ status: 'loading', q: term, results: [], error: '' });
+    try { setUsda({ status: 'done', q: term, results: await usdaSearch(term, meta.usdaKey, ctrl.signal), error: '' }); }
+    catch (e) { const msg = usdaErrorText(e); if (msg) setUsda({ status: 'error', q: term, results: [], error: msg }); }
+  };
+  const fresh = usda.q === term;
+  const open = food => setView({ name: 'detail', food });
+  const rows = (list, fav) => list.map(f => html`<${FoodRow} key=${f.id} food=${f} fav=${fav || state.favorites.includes(f.id)} onClick=${() => open(f)} />`);
+  return html`<${Sheet} tall title=${view.name === 'custom' ? 'Enter a food' : 'Add food'} onClose=${onClose}>
+    ${close => view.name === 'detail' ? html`<${FoodDetail} food=${view.food} meal0=${meal} onBack=${() => setView({ name: 'search' })} onDone=${close} />`
+      : view.name === 'custom' ? html`<${CustomFood} meal0=${meal} name0=${term} onBack=${() => setView({ name: 'search' })} onDone=${close} />`
+      : html`<div>
+        <form className="search" onSubmit=${e => { e.preventDefault(); runUsda(); }}>
+          <span className="search-ic"><${Icon} name="search" size=${18} /></span>
+          <input className="inp" type="search" enterKeyHint="search" autoComplete="off" placeholder="Search nasi lemak, egg, oats…" value=${q} onChange=${e => setQ(e.target.value)} aria-label="Search foods" />
+        </form>
+        ${!term ? html`<div>
+          ${favs.length > 0 && html`<${Section} title="Favourites">${rows(favs, true)}<//>`}
+          ${recents.length > 0 && html`<${Section} title="Recently used">${rows(recents)}<//>`}
+          <${Section} title="Malaysian dishes" sub="Lab-analysed">${rows(MAL_FOODS)}<//>
+        </div>` : html`<div>
+          ${local.length > 0 ? html`<${Section} title="Matches" sub="Malaysian and saved">${rows(local.slice(0, 30))}<//>`
+            : html`<p className="hint" style=${{ margin: '4px 2px 12px' }}>No Malaysian or saved food matches “${term}”.</p>`}
+          <div className="fsec">
+            <div className="fsec-head"><h4>USDA FoodData Central</h4><span>Generic foods, in English</span></div>
+            ${fresh && usda.status === 'loading' ? html`<div className="group">${[0, 1, 2].map(i => html`<div key=${i} className="skel-row"><div className="skel"></div></div>`)}</div>`
+              : fresh && usda.status === 'error' ? html`<div><div className="banner info"><${Icon} name="info" size=${16} /><span>${usda.error}</span></div><button className="btn ghost block press" onClick=${runUsda}>Try again</button></div>`
+              : fresh && usda.status === 'done' ? (usda.results.length ? html`<div className="group">${rows(usda.results)}</div>`
+                : html`<p className="hint" style=${{ margin: '4px 2px 0' }}>USDA has nothing for “${usda.q}”. Try a simple English word, like “egg” or “chicken breast”.</p>`)
+              : html`<button className="add-big press" disabled=${term.length < 2} onClick=${runUsda}><${Icon} name="globe" size=${18} />Search USDA for “${term}”</button>`}
+          </div>
+        </div>`}
+        <button className="link press" style=${{ margin: '16px 0 2px' }} onClick=${() => setView({ name: 'custom' })}><${Icon} name="plus" size=${15} />Enter a food manually</button>
+      </div>`}
+  <//>`;
+}
+
+function FoodDetail({ food, meal0, onBack, onDone }) {
+  const { state, date, dispatch, notify } = useApp();
+  const last = useMemo(() => {
+    const e = state.entries.filter(x => x.foodId === food.id).sort((a, b) => b.createdAt - a.createdAt)[0];
+    return e ? e.grams : null;
+  }, [state.entries, food.id]);
+  const [grams, setGrams] = useState(String(last || (food.serving ? food.serving.g : 100)));
+  const [meal, setMeal] = useState(meal0 || mealForNow());
+  const [err, setErr] = useState('');
+  const g = num(grams);
+  const n = Object.fromEntries(NUTS.map(k => [k, food.per100[k] * g / 100]));
+  const fav = state.favorites.includes(food.id);
+  const toggleFav = () => {
+    if (food.db === 'usda' && !state.foods.some(f => f.id === food.id)) dispatch({ type: 'saveFood', food: { ...food, usedAt: 0, uses: 0 } });
+    dispatch({ type: 'toggleFav', id: food.id });
+    notify(fav ? 'Removed from favourites' : 'Added to favourites');
+  };
+  const add = () => {
+    if (!(g > 0)) return setErr('Enter the portion size in grams.');
+    if (g > 3000) return setErr('Portion looks too large. Check the grams.');
+    const f = { name: food.name, meal, grams: String(g), kcal: String(n.kcal), protein: String(n.protein), carbs: String(n.carbs), fat: String(n.fat), per100: { ...food.per100 } };
+    dispatch({ type: 'addEntries', entries: [{ ...toEntry(f, date, food.db, false), foodId: food.id }] });
+    if (food.db !== 'mal') {
+      const prev = state.foods.find(x => x.id === food.id);
+      dispatch({ type: 'saveFood', food: { ...(prev || food), usedAt: Date.now(), uses: ((prev && prev.uses) || 0) + 1 } });
+    }
+    notify(`Added to ${mealLabel(meal)}`);
+    onDone();
+  };
+  const chips = [{ label: '100 g', g: 100 }];
+  if (food.serving) chips.push({ label: `Serving, ${fmt(food.serving.g)} g`, g: food.serving.g });
+  if (last && last !== 100 && (!food.serving || last !== food.serving.g)) chips.push({ label: `Last time, ${fmt(last)} g`, g: last });
+  return html`<div>
+    <button className="link mute press back" onClick=${onBack}><${Icon} name="left" size=${16} />Search</button>
+    <div className="detail-head">
+      <h3>${food.name}</h3>
+      <button className=${'round-btn press fav-btn' + (fav ? ' on' : '')} aria-label=${fav ? 'Remove from favourites' : 'Add to favourites'} aria-pressed=${fav} onClick=${toggleFav}><${Icon} name="star" size=${18} /></button>
+    </div>
+    <div className="src-box">
+      <div><span className=${'src src-' + food.db}>${DB_LABEL[food.db]}</span>${food.verified && html`<span className="ver"><${Icon} name="check" size=${12} stroke=${3} />Published value</span>`}</div>
+      <p>${food.source}. ${food.note || ''}${food.energyCalc ? ' Calories were worked out from the macros because USDA lists none for this food.' : ''}</p>
+    </div>
+    <div className="chips-row">${chips.map(c => html`<button key=${c.label} className=${'chip2 press' + (g === c.g ? ' on' : '')} onClick=${() => { setGrams(String(c.g)); setErr(''); }}>${c.label}</button>`)}</div>
+    <div className="portion">
+      <label>Portion</label>
+      <button className="round-btn press" aria-label="Less" onClick=${() => setGrams(String(Math.max(0, Math.round(g - 10))))}><${Icon} name="minus" size=${16} /></button>
+      <div className="inp-unit"><input className="inp num" inputMode="decimal" aria-label="Portion in grams" value=${grams} onChange=${e => { setGrams(e.target.value); setErr(''); }} /><span>g</span></div>
+      <button className="round-btn press" aria-label="More" onClick=${() => setGrams(String(Math.round(g + 10)))}><${Icon} name="plus" size=${16} /></button>
+    </div>
+    <div className="nut-card">
+      <div className="nut-big"><b className="num">${fmt(n.kcal)}</b><span>kcal</span></div>
+      <div className="nut-macros">
+        <div><b className="num" style=${{ color: 'var(--mint)' }}>${fmt1(n.protein)} g</b><span>Protein</span></div>
+        <div><b className="num" style=${{ color: 'var(--gold)' }}>${fmt1(n.carbs)} g</b><span>Carbs</span></div>
+        <div><b className="num" style=${{ color: 'var(--coral)' }}>${fmt1(n.fat)} g</b><span>Fat</span></div>
+      </div>
+    </div>
+    <div className="field"><label>Meal</label><${MealSeg} value=${meal} onChange=${setMeal} /></div>
+    ${err && html`<p className="err"><${Icon} name="alert" size=${15} />${err}</p>`}
+    <div className="actions"><button className="btn primary press" onClick=${add}>Add to ${mealLabel(meal)}</button></div>
+  </div>`;
+}
+
+function CustomFood({ meal0, name0, onBack, onDone }) {
   const { date, dispatch, notify } = useApp();
-  return html`<${Sheet} title="Add food" onClose=${onClose} lead="Type in what you ate. Food search with USDA and Malaysian dishes comes in Stage 4.">
-    ${close => html`<${FoodForm} initial=${{ meal }} submitLabel="Add to log" onSubmit=${f => {
-      dispatch({ type: 'addEntries', entries: [toEntry(f, date, 'manual', false)] });
-      notify(`Added to ${mealLabel(f.meal)}`); close();
-    }} />`}
+  const [save, setSave] = useState(true);
+  return html`<div>
+    <button className="link mute press back" onClick=${onBack}><${Icon} name="left" size=${16} />Search</button>
+    <${FoodForm} initial=${{ meal: meal0 || mealForNow(), name: name0 || '' }} submitLabel="Add to log"
+      before=${html`<label className="check"><input type="checkbox" checked=${save} onChange=${e => setSave(e.target.checked)} /><span>Save to My foods so I can find it next time</span></label>`}
+      onSubmit=${f => {
+        const g = num(f.grams);
+        let foodId;
+        if (save && g > 0) {
+          const food = {
+            id: 'my:' + uid(), db: 'custom', name: f.name.trim().slice(0, 120), aliases: [], category: 'My foods', source: 'Entered by you', note: 'Values you typed in yourself.',
+            per100: Object.fromEntries(NUTS.map(k => [k, r1(num(f[k]) / g * 100)])), serving: null, verified: false, usedAt: Date.now(), uses: 1, createdAt: Date.now(),
+          };
+          dispatch({ type: 'saveFood', food });
+          foodId = food.id;
+        }
+        dispatch({ type: 'addEntries', entries: [{ ...toEntry(f, date, foodId ? 'custom' : 'manual', false), foodId }] });
+        notify(`Added to ${mealLabel(f.meal)}`);
+        onDone();
+      }} />
+  </div>`;
+}
+
+function FoodDbSheet({ onClose }) {
+  const { state, meta, setMeta, dispatch, notify } = useApp();
+  const [key, setKey] = useState(meta.usdaKey || '');
+  const [test, setTest] = useState({ status: 'idle', msg: '' });
+  const mine = state.foods.filter(f => f.db === 'custom').sort((a, b) => a.name.localeCompare(b.name));
+  const cached = state.foods.filter(f => f.db === 'usda');
+  const unused = cached.filter(f => !state.favorites.includes(f.id));
+  const validKey = k => !k || /^[A-Za-z0-9]{20,64}$/.test(k);
+  const saveKey = () => {
+    const k = key.trim();
+    if (!validKey(k)) return setTest({ status: 'err', msg: 'That doesn’t look like a USDA key. It should be one long string of letters and numbers.' });
+    setMeta('usdaKey', k); setTest({ status: 'idle', msg: '' });
+    notify(k ? 'USDA key saved' : 'Using the shared demo key');
+  };
+  const runTest = async () => {
+    const k = key.trim();
+    if (!validKey(k)) return setTest({ status: 'err', msg: 'That doesn’t look like a USDA key. It should be one long string of letters and numbers.' });
+    setTest({ status: 'loading', msg: 'Testing…' });
+    try { const r = await usdaSearch('banana', k); setTest({ status: 'ok', msg: r.length ? `Working. USDA returned ${r.length} results for “banana”.` : 'Connected, but USDA returned no results.' }); }
+    catch (e) { setTest({ status: 'err', msg: usdaErrorText(e) || 'The test was cancelled.' }); }
+  };
+  return html`<${Sheet} title="Food database" onClose=${onClose}>
+    ${() => html`<div>
+      <p className="group-title" style=${{ marginTop: 0 }}>USDA search</p>
+      <div className="field"><label>Your USDA API key (optional)</label>
+        <input className="inp" value=${key} placeholder="Leave empty to use the shared demo key" autoCapitalize="off" autoCorrect="off" spellCheck=${false} onChange=${e => setKey(e.target.value)} />
+      </div>
+      <p className="hint">Without a key, FitFuel uses USDA’s shared demo key, limited to about 30 searches an hour. A free personal key allows about 1,000. Only your search words go to USDA, never your food log. The key stays on this iPhone. <a className="a" href="https://fdc.nal.usda.gov/api-key-signup.html" target="_blank" rel="noopener">Get a free key</a></p>
+      ${test.msg && html`<p className=${test.status === 'err' ? 'err' : 'hint'} style=${test.status === 'ok' ? { color: 'var(--lime)' } : null}>${test.status === 'err' && html`<${Icon} name="alert" size=${15} />`}${test.msg}</p>`}
+      <div className="actions">
+        <button className="btn ghost press" disabled=${test.status === 'loading'} onClick=${runTest}>Test</button>
+        <button className="btn primary press" onClick=${saveKey}>Save key</button>
+      </div>
+
+      <p className="group-title">My foods (${mine.length})</p>
+      ${mine.length ? html`<div className="group">${mine.map(f => html`<div key=${f.id} className="row">
+        <span className="rl">${f.name}<small>${fmt(f.per100.kcal)} kcal, P ${fmt1(f.per100.protein)}, C ${fmt1(f.per100.carbs)}, F ${fmt1(f.per100.fat)} per 100 g</small></span>
+        <button className="round-btn press" aria-label=${`Delete ${f.name}`} onClick=${() => { dispatch({ type: 'deleteFood', id: f.id }); notify('Food deleted'); }}><${Icon} name="trash" size=${15} /></button>
+      </div>`)}</div><p className="hint">Deleting a food doesn’t change meals you’ve already logged.</p>`
+        : html`<p className="hint">Foods you enter manually with “Save to My foods” appear here.</p>`}
+
+      <p className="group-title">Saved USDA foods</p>
+      <p className="hint">${cached.length ? `${fmt(cached.length)} USDA food${cached.length > 1 ? 's are' : ' is'} saved on this iPhone, so ${cached.length > 1 ? 'they work' : 'it works'} offline.` : 'USDA foods you log are saved here so they work offline next time.'}</p>
+      ${unused.length > 0 && html`<button className="btn ghost block press" onClick=${() => { dispatch({ type: 'deleteFoods', ids: unused.map(f => f.id) }); notify('Saved USDA foods cleared'); }}>Clear ${fmt(unused.length)} not in favourites</button>`}
+
+      <p className="group-title">Built-in Malaysian dishes</p>
+      <p className="hint">${MAL_FOODS.length} dishes with published per-100 g values from: ${[...new Set(MAL_FOODS.map(f => f.source))].join('; ')}. These come from lab analysis of specific samples, so your stall’s recipe and portion may differ.</p>
+    </div>`}
   <//>`;
 }
 
@@ -1850,7 +2245,8 @@ function SheetHost({ sheet }) {
   if (!sheet) return null;
   const props = { ...sheet.props, onClose: closeSheet, key: sheet.id };
   switch (sheet.type) {
-    case 'addFood': return html`<${AddFoodSheet} ...${props} />`;
+    case 'addFood': return html`<${FoodSearchSheet} ...${props} />`;
+    case 'foodDb': return html`<${FoodDbSheet} ...${props} />`;
     case 'editEntry': return html`<${EditEntrySheet} ...${props} />`;
     case 'profile': return html`<${ProfileSheet} ...${props} />`;
     case 'targets': return html`<${TargetsSheet} ...${props} />`;
