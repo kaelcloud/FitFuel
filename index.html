@@ -452,6 +452,14 @@ div.row{cursor:default}
 .check input{width:22px;height:22px;accent-color:var(--lime);flex:none}
 .a{color:var(--lime);font-weight:600;text-decoration:none}
 .sheet.tall{min-height:86vh}
+/* stage 5 */
+.pill.live{color:var(--lime)}
+.preview-actions.col{flex-direction:column}
+.row-btns{display:flex;gap:10px}.row-btns .btn{flex:1}
+.glass-inp{background:rgba(20,20,20,.7);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-color:rgba(255,255,255,.14)}
+.item-note{font-size:13px;color:var(--mute);line-height:1.45;margin:-4px 0 12px}
+.link-inline{color:var(--lime);font-weight:600;font-size:13px;padding:0;display:inline}
+.token-row{display:flex;gap:8px}.token-row .inp{flex:1;min-width:0;font-size:13px}.token-row .btn{height:50px;padding:0 14px;flex:none}
 </style>
 </head>
 <body>
@@ -760,7 +768,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
 <script>/* htm 3.1.1 (Apache-2.0) */!function(n,e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e():"function"==typeof define&&define.amd?define(e):n.htm=e()}(this,function(){var n=function(e,t,u,s){var r;t[0]=0;for(var p=1;p<t.length;p++){var h=t[p++],o=t[p]?(t[0]|=h?1:2,u[t[p++]]):t[++p];3===h?s[0]=o:4===h?s[1]=Object.assign(s[1]||{},o):5===h?(s[1]=s[1]||{})[t[++p]]=o:6===h?s[1][t[++p]]+=o+"":h?(r=e.apply(o,n(e,o,u,["",null])),s.push(r),o[0]?t[0]|=2:(t[p-2]=0,t[p]=r)):s.push(o)}return s},e=new Map;return function(t){var u=e.get(this);return u||(u=new Map,e.set(this,u)),(u=n(this,u.get(t)||(u.set(t,u=function(n){for(var e,t,u=1,s="",r="",p=[0],h=function(n){1===u&&(n||(s=s.replace(/^\s*\n\s*|\s*\n\s*$/g,"")))?p.push(0,n,s):3===u&&(n||s)?(p.push(3,n,s),u=2):2===u&&"..."===s&&n?p.push(4,n,0):2===u&&s&&!n?p.push(5,0,!0,s):u>=5&&((s||!n&&5===u)&&(p.push(u,0,s,t),u=6),n&&(p.push(u,n,0,t),u=6)),s=""},o=0;o<n.length;o++){o&&(1===u&&h(),h(o));for(var f=0;f<n[o].length;f++)e=n[o][f],1===u?"<"===e?(h(),p=[p],u=3):s+=e:4===u?"--"===s&&">"===e?(u=1,s=""):s=e+s[0]:r?e===r?r="":s+=e:'"'===e||"'"===e?r=e:">"===e?(h(),u=1):u&&("="===e?(u=5,t=s,s=""):"/"===e&&(u<5||">"===n[o][f+1])?(h(),3===u&&(p=p[0]),u=p,(p=p[0]).push(2,0,u),u=0):" "===e||"\t"===e||"\n"===e||"\r"===e?(h(),u=2):s+=e),3===u&&"!--"===s&&(u=4,p=p[0])}return h(),p}(t)),u),arguments,[])).length>1?u:u[0]}});
 </script>
 <script>
-/* FitFuel AI — Stage 4: UI, storage, calculations, food database and search */
+/* FitFuel AI — Stage 5: UI, storage, calculations, food database, AI food scanner */
 const { useState, useEffect, useRef, useMemo, useCallback, createContext, useContext, useReducer } = React;
 const html = htm.bind(React.createElement);
 
@@ -932,7 +940,7 @@ const MAL_FOODS = MAL_ROWS.map(([id, name, aliases, category, src, kcal, protein
   per100: { kcal, protein, carbs, fat }, serving: serving ? { label: '1 typical serving', g: serving, note: 'Typical serving weight from the same study or Malaysian survey references.' } : null, verified: true,
 }));
 const DB_LABEL = { mal: 'Malaysian', usda: 'USDA', custom: 'My food' };
-const sourceLabel = s => ({ 'scan-demo': 'Scan (demo)', manual: 'Manual', mal: 'Malaysian database', usda: 'USDA', custom: 'My food' }[s] || s);
+const sourceLabel = s => ({ scan: 'AI scan', 'scan-demo': 'Scan (demo)', manual: 'Manual', mal: 'Malaysian database', usda: 'USDA', custom: 'My food' }[s] || s);
 
 const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
 function searchFoods(q, list) {
@@ -1749,7 +1757,7 @@ function Settings() {
 
     <p className="group-title">Food scanner</p>
     <div className="group">
-      <${Row} icon="sparkles" label="AI provider" sub="Sample results only until an AI service is connected" badge=${{ text: 'Demo mode', tone: 'coral' }} onClick=${openScan} />
+      <${Row} icon="sparkles" tone=${aiConfigured(meta) ? 'lime' : ''} label="AI scanner" sub=${aiConfigured(meta) ? 'Google Gemini through your Cloudflare Worker' : 'Sample results until you connect Gemini'} badge=${aiConfigured(meta) ? { text: 'Connected' } : { text: 'Demo mode', tone: 'coral' }} onClick=${() => openSheet('ai')} />
       <${Row} icon="database" label="Food database" sub=${`${MAL_FOODS.length} Malaysian dishes, USDA search, ${state.foods.filter(f => f.db === 'custom').length} of your own`} onClick=${() => openSheet('foodDb')} />
     </div>
 
@@ -2247,6 +2255,7 @@ function SheetHost({ sheet }) {
   switch (sheet.type) {
     case 'addFood': return html`<${FoodSearchSheet} ...${props} />`;
     case 'foodDb': return html`<${FoodDbSheet} ...${props} />`;
+    case 'ai': return html`<${AiSheet} ...${props} />`;
     case 'editEntry': return html`<${EditEntrySheet} ...${props} />`;
     case 'profile': return html`<${ProfileSheet} ...${props} />`;
     case 'targets': return html`<${TargetsSheet} ...${props} />`;
@@ -2259,7 +2268,7 @@ function SheetHost({ sheet }) {
 }
 
 /* ---------------- Scanner ---------------- */
-/* Demo sample: clearly labelled, illustrative values only. Real AI analysis arrives in Stage 5. */
+/* Demo sample: clearly labelled, fixed values. Used only until an AI service is connected. */
 const DEMO_ITEMS = [
   { name: 'Coconut rice (nasi lemak)', grams: 180, conf: 'medium', per100: { kcal: 190, protein: 3.5, carbs: 30, fat: 6.5 } },
   { name: 'Sambal', grams: 35, conf: 'low', per100: { kcal: 180, protein: 2, carbs: 14, fat: 13 } },
@@ -2267,7 +2276,8 @@ const DEMO_ITEMS = [
   { name: 'Hard-boiled egg', grams: 50, conf: 'high', per100: { kcal: 155, protein: 12.6, carbs: 1.1, fat: 10.6 } },
   { name: 'Cucumber slices', grams: 30, conf: 'high', per100: { kcal: 15, protein: 0.7, carbs: 3.6, fat: 0.1 } },
 ];
-const STATUS = ['Finding each food on the plate', 'Estimating portion sizes', 'Working out the nutrition'];
+const STATUS = ['Finding each food on the plate', 'Estimating portion sizes', 'Checking the food database', 'Working out the nutrition'];
+const WORKER_CODE = "// FitFuel AI scanner proxy (Cloudflare Worker)\n// Keeps your Gemini API key secret. The FitFuel app sends a photo here, this Worker\n// asks Gemini, checks the answer is JSON, and sends it back.\n//\n// Settings \u2192 Variables and Secrets in Cloudflare:\n//   GEMINI_API_KEY  (Secret)  your key from Google AI Studio\n//   APP_TOKEN       (Secret)  the token shown in FitFuel \u2192 Settings \u2192 AI scanner\n//   ALLOWED_ORIGIN  (Text)    your site, e.g. https://yourname.github.io\n//   MODEL           (Text)    optional, e.g. gemini-3.8-flash\n\nconst DEFAULT_MODEL = 'gemini-3.8-flash';\nconst MAX_IMAGE_BYTES = 4 * 1024 * 1024;\n\nconst SCHEMA = {\n  type: 'OBJECT',\n  properties: {\n    is_food: { type: 'BOOLEAN' },\n    items: {\n      type: 'ARRAY',\n      items: {\n        type: 'OBJECT',\n        properties: {\n          name: { type: 'STRING', description: 'Dish or food name, Malaysian name if it is a Malaysian dish' },\n          english_name: { type: 'STRING', description: 'Short generic English name for a database search, e.g. \"fried egg\"' },\n          grams: { type: 'NUMBER', description: 'Best estimate of edible weight in grams' },\n          grams_low: { type: 'NUMBER' },\n          grams_high: { type: 'NUMBER' },\n          kcal_per_100g: { type: 'NUMBER' },\n          protein_per_100g: { type: 'NUMBER' },\n          carbs_per_100g: { type: 'NUMBER' },\n          fat_per_100g: { type: 'NUMBER' },\n          ingredients: { type: 'ARRAY', items: { type: 'STRING' } },\n          confidence: { type: 'STRING', enum: ['high', 'medium', 'low'] },\n          notes: { type: 'STRING', description: 'What is uncertain, e.g. hidden oil or gravy' },\n        },\n        required: ['name', 'english_name', 'grams', 'kcal_per_100g', 'protein_per_100g', 'carbs_per_100g', 'fat_per_100g', 'confidence'],\n      },\n    },\n    overall_note: { type: 'STRING' },\n  },\n  required: ['is_food', 'items'],\n};\n\nfunction buildPrompt(note) {\n  return [\n    'You estimate food from a photo for a personal calorie tracker used in Malaysia.',\n    'List every distinct food and drink you can see.',\n    'Rules:',\n    '1. Use Malaysian dish names when the food is Malaysian (nasi lemak, roti canai, mee goreng, ayam goreng kunyit, teh tarik).',\n    '2. A standard composite dish is ONE item: nasi lemak with its sambal, anchovies, peanuts, egg and cucumber; roti canai with its dhal; nasi ayam with its rice and chicken. List an add-on separately only if it is clearly extra, such as an extra piece of fried chicken.',\n    '3. Estimate edible weight in grams using the plate, bowl or cutlery for scale, and give a realistic low and high range. Weights from a photo are always estimates.',\n    '4. Give typical nutrition per 100 g for the food as usually prepared in Malaysia, including cooking oil and santan.',\n    '5. confidence is high only when the food is clearly identifiable and fully visible; low when it is hidden, mixed or unclear.',\n    '6. Use notes to say what could change the numbers, such as hidden oil, gravy or sauce.',\n    '7. If the photo does not show food or drink, set is_food to false and return no items.',\n    note ? `The user added this note about the meal: \"${note}\"` : '',\n  ].filter(Boolean).join('\\n');\n}\n\nexport default {\n  async fetch(request, env) {\n    const origin = request.headers.get('Origin') || '';\n    const allowed = String(env.ALLOWED_ORIGIN || '').split(',').map(s => s.trim().replace(/\\/$/, '')).filter(Boolean);\n    const originOk = allowed.length === 0 || allowed.includes(origin);\n    const cors = {\n      'Access-Control-Allow-Origin': originOk && origin ? origin : (allowed[0] || '*'),\n      'Access-Control-Allow-Methods': 'POST, OPTIONS',\n      'Access-Control-Allow-Headers': 'Content-Type, X-App-Token',\n      'Access-Control-Max-Age': '86400',\n      'Vary': 'Origin',\n    };\n    const reply = (status, body) => new Response(JSON.stringify(body), { status, headers: { ...cors, 'Content-Type': 'application/json' } });\n\n    if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });\n    if (request.method !== 'POST') return reply(405, { error: 'method' });\n    if (!originOk) return reply(403, { error: 'origin' });\n    if (!env.APP_TOKEN || request.headers.get('X-App-Token') !== env.APP_TOKEN) return reply(401, { error: 'token' });\n    if (!env.GEMINI_API_KEY) return reply(500, { error: 'no_key' });\n\n    let body;\n    try { body = await request.json(); } catch { return reply(400, { error: 'bad_request' }); }\n    const model = env.MODEL || DEFAULT_MODEL;\n    if (body && body.ping) return reply(200, { ok: true, model });\n\n    const image = body && body.image;\n    const mimeType = body && body.mimeType;\n    if (typeof image !== 'string' || !/^image\\/(jpeg|png|webp)$/.test(mimeType || '')) return reply(400, { error: 'bad_image' });\n    if (image.length * 0.75 > MAX_IMAGE_BYTES) return reply(413, { error: 'too_large' });\n    const note = typeof body.note === 'string' ? body.note.slice(0, 300).replace(/\"/g, \"'\") : '';\n\n    const geminiRequest = {\n      contents: [{ role: 'user', parts: [{ inline_data: { mime_type: mimeType, data: image } }, { text: buildPrompt(note) }] }],\n      generationConfig: { temperature: 0.2, responseMimeType: 'application/json', responseSchema: SCHEMA },\n    };\n\n    let res;\n    try {\n      res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {\n        method: 'POST',\n        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': env.GEMINI_API_KEY },\n        body: JSON.stringify(geminiRequest),\n      });\n    } catch {\n      return reply(502, { error: 'upstream_unreachable' });\n    }\n    if (!res.ok) {\n      let detail = '';\n      try { const e = await res.json(); detail = String((e && e.error && e.error.message) || '').slice(0, 200); } catch {}\n      const error = res.status === 429 ? 'rate' : res.status === 404 ? 'model' : (res.status === 400 || res.status === 401 || res.status === 403) ? 'gemini_rejected' : 'upstream';\n      return reply(res.status === 429 ? 429 : 502, { error, status: res.status, detail, model });\n    }\n    let data;\n    try { data = await res.json(); } catch { return reply(502, { error: 'bad_ai_json' }); }\n    const cand = data && data.candidates && data.candidates[0];\n    const text = cand && cand.content && Array.isArray(cand.content.parts) ? cand.content.parts.map(p => p.text || '').join('') : '';\n    if (!text) return reply(502, { error: 'empty', detail: String((cand && cand.finishReason) || (data.promptFeedback && data.promptFeedback.blockReason) || '') });\n    let result;\n    try { result = JSON.parse(text); } catch { return reply(502, { error: 'bad_ai_json' }); }\n    return reply(200, { model, result });\n  },\n};\n";
 
 function downscale(file, max) {
   return new Promise((res, rej) => {
@@ -2285,18 +2295,132 @@ function downscale(file, max) {
     im.src = u;
   });
 }
+/* Smaller copy for the AI: 1024 px is plenty to recognise food and keeps uploads small. */
+function shrinkDataUrl(dataUrl, max = 1024, quality = 0.8) {
+  return new Promise((res, rej) => {
+    const im = new Image();
+    im.onload = () => {
+      const s = Math.min(1, max / Math.max(im.naturalWidth, im.naturalHeight));
+      const c = document.createElement('canvas');
+      c.width = Math.round(im.naturalWidth * s); c.height = Math.round(im.naturalHeight * s);
+      c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+      res(c.toDataURL('image/jpeg', quality));
+    };
+    im.onerror = () => rej(new Error('decode'));
+    im.src = dataUrl;
+  });
+}
 
-function ResultItem({ it, index, onChange, onRemove }) {
+/* ---- AI service (your Cloudflare Worker in front of Gemini) ---- */
+const aiConfigured = meta => !!(meta.aiUrl && meta.aiToken);
+async function callWorker(meta, payload, { timeout = 45000, signal } = {}) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), timeout);
+  const onAbort = () => ctrl.abort();
+  if (signal) signal.addEventListener('abort', onAbort);
+  try {
+    const res = await fetch(meta.aiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-App-Token': meta.aiToken }, body: JSON.stringify(payload), signal: ctrl.signal });
+    let body = null;
+    try { body = await res.json(); } catch (_) {}
+    if (!res.ok) { const e = new Error((body && body.error) || 'http'); e.status = res.status; e.detail = body && body.detail; throw e; }
+    return body || {};
+  } catch (e) {
+    if (e.name === 'AbortError') { const err = new Error(signal && signal.aborted ? 'cancelled' : 'timeout'); throw err; }
+    throw e;
+  } finally { clearTimeout(t); if (signal) signal.removeEventListener('abort', onAbort); }
+}
+const RETRYABLE = new Set(['timeout', 'upstream', 'upstream_unreachable', 'bad_ai_json', 'empty', 'Failed to fetch', 'Load failed', 'http']);
+function aiErrorText(e) {
+  const m = e && e.message;
+  if (m === 'cancelled') return '';
+  if (!navigator.onLine || (e && e.name === 'TypeError')) return 'No connection to your AI service. Check your internet, or the Worker address in Settings → AI scanner.';
+  if (m === 'timeout') return 'The AI took too long to answer. Try again, maybe with a closer photo.';
+  if (m === 'token') return 'Your Worker rejected the app token. Make sure APP_TOKEN in Cloudflare matches the token in Settings → AI scanner.';
+  if (m === 'origin') return 'Your Worker blocked this website. Check ALLOWED_ORIGIN in Cloudflare matches the address of FitFuel.';
+  if (m === 'no_key') return 'The Worker has no Gemini key. Add GEMINI_API_KEY as a secret in Cloudflare.';
+  if (m === 'rate') return 'Gemini’s usage limit was reached. Wait a minute and try again.';
+  if (m === 'model') return 'Gemini doesn’t recognise the model name. Set MODEL in Cloudflare to a model listed in Google AI Studio.';
+  if (m === 'gemini_rejected') return `Gemini rejected the request${e.detail ? `: ${e.detail}` : '. Check the API key in Cloudflare.'}`;
+  if (m === 'too_large') return 'That photo is too large to send. Try another photo.';
+  if (m === 'bad_ai_json' || m === 'empty') return 'The AI gave an answer FitFuel couldn’t read. Try again.';
+  return 'The AI service isn’t responding properly. Try again in a moment.';
+}
+/* Check every number before it can reach the log. */
+function validateAiResult(r) {
+  if (!r || typeof r !== 'object') return { ok: false, items: [], skipped: 0 };
+  const raw = Array.isArray(r.items) ? r.items.slice(0, 15) : [];
+  const n = (v, lo, hi) => typeof v === 'number' && Number.isFinite(v) && v >= lo && v <= hi;
+  const items = [];
+  for (const x of raw) {
+    if (!x || typeof x.name !== 'string' || !x.name.trim()) continue;
+    if (!n(x.grams, 1, 2000) || !n(x.kcal_per_100g, 0, 900) || !n(x.protein_per_100g, 0, 100) || !n(x.carbs_per_100g, 0, 100) || !n(x.fat_per_100g, 0, 100)) continue;
+    if (x.protein_per_100g + x.carbs_per_100g + x.fat_per_100g > 105) continue;
+    const lo = n(x.grams_low, 1, 2000) ? x.grams_low : null, hi = n(x.grams_high, 1, 3000) ? x.grams_high : null;
+    items.push({
+      name: x.name.trim().slice(0, 80),
+      english: typeof x.english_name === 'string' ? x.english_name.trim().slice(0, 60) : '',
+      grams: Math.round(x.grams),
+      range: lo && hi && lo <= x.grams && hi >= x.grams ? [Math.round(lo), Math.round(hi)] : null,
+      per100: { kcal: r1(x.kcal_per_100g), protein: r1(x.protein_per_100g), carbs: r1(x.carbs_per_100g), fat: r1(x.fat_per_100g) },
+      conf: ['high', 'medium', 'low'].includes(x.confidence) ? x.confidence : 'low',
+      ingredients: Array.isArray(x.ingredients) ? x.ingredients.filter(s => typeof s === 'string').slice(0, 8).map(s => s.slice(0, 40)) : [],
+      notes: typeof x.notes === 'string' ? x.notes.slice(0, 200) : '',
+    });
+  }
+  return { ok: true, isFood: r.is_food !== false, items, skipped: raw.length - items.length, note: typeof r.overall_note === 'string' ? r.overall_note.slice(0, 300) : '' };
+}
+/* Find a database food with the same name, so published values replace the AI's guess. Strict on purpose. */
+function matchFood(names, list) {
+  const base = s => norm(String(s).replace(/\(.*?\)/g, ''));
+  for (const q of names.filter(Boolean)) {
+    const nq = base(q);
+    if (!nq) continue;
+    const hit = list.find(f => base(f.name) === nq || (f.aliases || []).some(a => norm(a) === nq));
+    if (hit) return hit;
+  }
+  return null;
+}
+function makeScanItem(ai, match) {
+  const it = { id: uid(), name: ai.name, conf: ai.conf, range: ai.range, ingredients: ai.ingredients, notes: ai.notes, english: ai.english, ai: { name: ai.name, per100: ai.per100 }, match, using: match ? 'db' : 'ai', kcal: '', protein: '', carbs: '', fat: '', per100: null, lookup: null };
+  return applySource(it, it.using, String(ai.grams));
+}
+function applySource(it, using, grams) {
+  const db = using === 'db' && it.match;
+  return withGrams({ ...it, using: db ? 'db' : 'ai', name: db && it.match.db !== 'usda' ? it.match.name : it.ai.name, per100: { ...(db ? it.match.per100 : it.ai.per100) } }, grams != null ? grams : it.grams);
+}
+
+function ResultItem({ it, index, onChange, onRemove, meta }) {
   const step = g => onChange(withGrams(it, String(Math.max(0, Math.round(num(it.grams) + g)))));
+  const lookup = async () => {
+    const q = it.english || it.ai.name;
+    onChange({ ...it, lookup: { status: 'loading', results: [], error: '' } });
+    try { const results = (await usdaSearch(q, meta.usdaKey)).slice(0, 5); onChange({ ...it, lookup: { status: 'done', results, error: '', q } }); }
+    catch (e) { onChange({ ...it, lookup: { status: 'error', results: [], error: usdaErrorText(e) } }); }
+  };
+  const pick = f => onChange(applySource({ ...it, match: f, lookup: null }, 'db'));
+  const srcText = it.using === 'db' && it.match ? `${DB_LABEL[it.match.db]} database values` : it.ai ? 'AI estimate' : 'Entered by you';
   return html`<div className="item" style=${{ animationDelay: `${index * 70}ms` }}>
     <div className="item-top">
       <input className="inp" aria-label="Food name" value=${it.name} onChange=${e => onChange({ ...it, name: e.target.value })} />
       <button className="round-btn press" aria-label="Remove item" onClick=${onRemove}><${Icon} name="trash" size=${16} /></button>
     </div>
     <div className="item-meta">
-      <span className="est">Estimate</span>
+      <span className=${it.using === 'db' && it.match ? 'src src-' + it.match.db : 'est'}>${srcText}</span>
       ${it.conf && html`<span className=${'conf ' + it.conf}><i></i>${it.conf === 'high' ? 'Clear match' : it.conf === 'medium' ? 'Likely match' : 'Unsure, please check'}</span>`}
+      ${it.range && html`<span>AI range ${fmt(it.range[0])}–${fmt(it.range[1])} g</span>`}
     </div>
+    ${it.using === 'db' && it.match && it.ai && html`<p className="item-note">Identified as “${it.ai.name}”. Nutrition per 100 g from ${it.match.source}. <button className="link-inline" onClick=${() => onChange(applySource(it, 'ai'))}>Use the AI’s estimate instead</button></p>`}
+    ${it.using === 'ai' && it.match && html`<p className="item-note">Using the AI’s own estimate. <button className="link-inline" onClick=${() => onChange(applySource(it, 'db'))}>Use ${DB_LABEL[it.match.db]} database values</button></p>`}
+    ${it.ai && !it.match && html`<p className="item-note">No database match, so these numbers are the AI’s estimate.${' '}
+      ${!it.lookup && html`<button className="link-inline" onClick=${lookup}>Look up in USDA</button>`}</p>`}
+    ${it.lookup && it.lookup.status === 'loading' && html`<div className="skel" style=${{ height: 44, borderRadius: 12, margin: '0 0 10px' }}></div>`}
+    ${it.lookup && it.lookup.status === 'error' && html`<p className="err">${it.lookup.error}</p>`}
+    ${it.lookup && it.lookup.status === 'done' && html`<div className="group" style=${{ marginBottom: 10 }}>
+      ${it.lookup.results.length ? it.lookup.results.map(f => html`<button key=${f.id} className="food-row press" onClick=${() => pick(f)}>
+        <div className="entry-main"><div className="entry-name">${f.name}</div><div className="entry-sub"><span className="src src-usda">USDA</span></div></div>
+        <div className="fr-kc num">${fmt(f.per100.kcal)}<small>kcal / 100 g</small></div></button>`)
+        : html`<p className="hint" style=${{ padding: '10px 12px', margin: 0 }}>USDA has nothing for “${it.lookup.q}”.</p>`}
+    </div>`}
     <div className="portion">
       <label>Portion</label>
       <button className="round-btn press" aria-label="Less" onClick=${() => step(-10)}><${Icon} name="minus" size=${16} /></button>
@@ -2309,11 +2433,13 @@ function ResultItem({ it, index, onChange, onRemove }) {
         <label style=${{ marginTop: 5 }}>${l}${k === 'kcal' ? '' : ' g'}</label></div>`)}
     </div>
     <div style=${{ marginTop: 10 }}><${EnergyHint} kcal=${num(it.kcal)} p=${num(it.protein)} c=${num(it.carbs)} f=${num(it.fat)} /></div>
+    ${(it.ingredients && it.ingredients.length > 0 || it.notes) && html`<p className="item-note" style=${{ marginBottom: 0 }}>${it.ingredients && it.ingredients.length ? `Possible ingredients: ${it.ingredients.join(', ')}.` : ''} ${it.notes || ''}</p>`}
   </div>`;
 }
 
 function Scanner({ onClose }) {
-  const { dispatch, notify, setDate, setTab } = useApp();
+  const { state, meta, dispatch, notify, setDate, setTab, openSheet } = useApp();
+  const live = aiConfigured(meta);
   const [stage, setStage] = useState('camera');
   const [img, setImg] = useState(null);
   const [camErr, setCamErr] = useState('');
@@ -2322,15 +2448,16 @@ function Scanner({ onClose }) {
   const [items, setItems] = useState([]);
   const [meal, setMeal] = useState(mealForNow());
   const [status, setStatus] = useState(0);
-  const videoRef = useRef(null), streamRef = useRef(null), libRef = useRef(null), shotRef = useRef(null), timerRef = useRef(null);
+  const [note, setNote] = useState('');
+  const [aiErr, setAiErr] = useState('');
+  const [info, setInfo] = useState({ model: '', skipped: 0, note: '', demo: !live });
+  const videoRef = useRef(null), streamRef = useRef(null), libRef = useRef(null), shotRef = useRef(null), timerRef = useRef(null), abortRef = useRef(null);
 
   const stopCam = () => { if (streamRef.current) { streamRef.current.getTracks().forEach(t => t.stop()); streamRef.current = null; } setCamReady(false); };
-
   useEffect(() => {
     document.body.classList.add('lock');
-    return () => { document.body.classList.remove('lock'); stopCam(); clearTimeout(timerRef.current); };
+    return () => { document.body.classList.remove('lock'); stopCam(); clearTimeout(timerRef.current); if (abortRef.current) abortRef.current.abort(); };
   }, []);
-
   useEffect(() => {
     if (stage !== 'camera') { stopCam(); return; }
     let cancelled = false;
@@ -2345,11 +2472,10 @@ function Scanner({ onClose }) {
       .catch(e => { if (!cancelled) setCamErr(e && e.name === 'NotAllowedError' ? 'Camera access is turned off for this app. Allow it in iPhone Settings, or use a photo instead.' : 'The camera couldn’t start. You can still take or choose a photo.'); });
     return () => { cancelled = true; stopCam(); };
   }, [stage]);
-
   useEffect(() => {
     if (stage !== 'analyzing') return;
     setStatus(0);
-    const id = setInterval(() => setStatus(s => Math.min(s + 1, STATUS.length - 1)), 800);
+    const id = setInterval(() => setStatus(s => Math.min(s + 1, STATUS.length - 1)), 1600);
     return () => clearInterval(id);
   }, [stage]);
 
@@ -2363,7 +2489,6 @@ function Scanner({ onClose }) {
     setFlash(true); setTimeout(() => setFlash(false), 350);
     setImg(c.toDataURL('image/jpeg', 0.85)); setStage('preview');
   };
-
   const onFile = async e => {
     const file = e.target.files && e.target.files[0];
     e.target.value = '';
@@ -2371,43 +2496,71 @@ function Scanner({ onClose }) {
     if (!/^image\//.test(file.type)) return notify('Choose an image file, such as a JPG or HEIC photo.', 'err');
     if (file.size > 15 * 1024 * 1024) return notify('That photo is over 15 MB. Choose a smaller one.', 'err');
     try { setImg(await downscale(file, 1280)); setStage('preview'); }
-    catch { notify('That photo couldn’t be opened. Try another one.', 'err'); }
+    catch (_) { notify('That photo couldn’t be opened. Try another one.', 'err'); }
   };
 
-  const analyze = () => {
-    setStage('analyzing');
+  const runDemo = () => {
     timerRef.current = setTimeout(() => {
       setItems(DEMO_ITEMS.map(d => withGrams({ id: uid(), name: d.name, conf: d.conf, per100: { ...d.per100 }, kcal: '', protein: '', carbs: '', fat: '' }, String(d.grams))));
+      setInfo({ model: '', skipped: 0, note: '', demo: true });
       setStage('results');
     }, 2600);
   };
+  const runAi = async () => {
+    const ctrl = new AbortController();
+    abortRef.current = ctrl;
+    let small;
+    try { small = await shrinkDataUrl(img); } catch (_) { setAiErr('That photo couldn’t be prepared. Try another one.'); setStage('error'); return; }
+    const payload = { image: small.split(',')[1], mimeType: 'image/jpeg', note: note.trim() };
+    let out, lastErr;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try { out = await callWorker(meta, payload, { signal: ctrl.signal }); break; }
+      catch (e) {
+        lastErr = e;
+        if (e.message === 'cancelled') return;
+        if (attempt === 0 && (RETRYABLE.has(e.message) || e.name === 'TypeError') && navigator.onLine) { await new Promise(r => setTimeout(r, 1500)); continue; }
+        break;
+      }
+    }
+    if (!out) { setAiErr(aiErrorText(lastErr)); setStage('error'); return; }
+    const v = validateAiResult(out.result);
+    if (!v.ok) { setAiErr('The AI gave an answer FitFuel couldn’t read. Try again.'); setStage('error'); return; }
+    if (!v.isFood || (!v.items.length && !v.skipped)) { setAiErr('No food was found in this photo. Try again with the whole plate in view.'); setStage('error'); return; }
+    if (!v.items.length) { setAiErr('The AI’s numbers didn’t pass FitFuel’s checks, so nothing was filled in. Try again or log this meal manually.'); setStage('error'); return; }
+    const list = [...MAL_FOODS, ...state.foods];
+    setItems(v.items.map(ai => makeScanItem(ai, matchFood([ai.name, ai.english], list))));
+    setInfo({ model: out.model || '', skipped: v.skipped, note: v.note, demo: false });
+    setStage('results');
+  };
+  const analyze = () => { setAiErr(''); setStage('analyzing'); if (live) runAi(); else runDemo(); };
+  const cancelAnalyze = () => { clearTimeout(timerRef.current); if (abortRef.current) abortRef.current.abort(); setStage('preview'); };
 
-  const addItem = () => setItems(list => [...list, { id: uid(), name: '', grams: '', kcal: '', protein: '', carbs: '', fat: '', per100: null, conf: null }]);
-
+  const addItem = () => setItems(list => [...list, { id: uid(), name: '', grams: '', kcal: '', protein: '', carbs: '', fat: '', per100: null, conf: null, ai: null, match: null, using: 'manual' }]);
   const save = () => {
     if (!items.length) return notify('Add at least one food before saving.', 'err');
     for (const it of items) { const e = validateFood(it); if (e) return notify(`${it.name || 'An item'}: ${e}`, 'err'); }
     const t = todayKey();
-    dispatch({ type: 'addEntries', entries: items.map(it => toEntry({ ...it, meal }, t, 'scan-demo', true)) });
+    const src = info.demo ? 'scan-demo' : 'scan';
+    dispatch({ type: 'addEntries', entries: items.map(it => ({ ...toEntry({ ...it, meal }, t, src, true), foodId: it.using === 'db' && it.match ? it.match.id : undefined })) });
+    for (const it of items) if (it.using === 'db' && it.match && it.match.db === 'usda') dispatch({ type: 'saveFood', food: { ...it.match, usedAt: Date.now(), uses: ((state.foods.find(f => f.id === it.match.id) || {}).uses || 0) + 1 } });
     setDate(t); setTab('home');
     notify(`Saved ${items.length} item${items.length > 1 ? 's' : ''} to ${mealLabel(meal)}`);
     onClose();
   };
+  const restart = () => { setItems([]); setImg(null); setNote(''); setAiErr(''); setStage('camera'); };
 
   const tot = sumNut(items.map(it => ({ kcal: num(it.kcal), protein: num(it.protein), carbs: num(it.carbs), fat: num(it.fat) })));
   const top = (left, right) => html`<div className="scan-top">${left}${right || html`<span></span>`}</div>`;
   const closeBtn = html`<button className="round-btn glass press" aria-label="Close scanner" onClick=${onClose}><${Icon} name="x" size=${18} /></button>`;
-  const demoPill = html`<span className="pill glass demo"><${Icon} name="info" size=${14} />Demo mode</span>`;
-  const inputs = html`<div>
-    <input ref=${libRef} type="file" accept="image/*" hidden onChange=${onFile} />
-    <input ref=${shotRef} type="file" accept="image/*" capture="environment" hidden onChange=${onFile} />
-  </div>`;
+  const modePill = live ? html`<span className="pill glass live"><${Icon} name="sparkles" size=${14} />Gemini</span>`
+    : html`<button className="pill glass demo press" onClick=${() => { onClose(); openSheet('ai'); }}><${Icon} name="info" size=${14} />Demo mode</button>`;
 
   return html`<div className="scanner" role="dialog" aria-modal="true" aria-label="Food scanner">
-    ${inputs}
+    <input ref=${libRef} type="file" accept="image/*" hidden onChange=${onFile} />
+    <input ref=${shotRef} type="file" accept="image/*" capture="environment" hidden onChange=${onFile} />
     ${stage === 'camera' && html`<div style=${{ display: 'contents' }}>
       <div className="cam"><video ref=${videoRef} playsInline muted autoPlay style=${{ opacity: camReady ? 1 : 0, transition: 'opacity .3s' }}></video></div>
-      ${top(closeBtn, demoPill)}
+      ${top(closeBtn, modePill)}
       ${camErr ? html`<div className="cam-err glass">
         <div className="halo"><${Icon} name="camera" size=${26} /></div>
         <h3>Use a photo instead</h3><p>${camErr}</p>
@@ -2415,7 +2568,7 @@ function Scanner({ onClose }) {
         <button className="btn ghost press" onClick=${() => libRef.current.click()}><${Icon} name="image" size=${18} />Choose from library</button>
       </div>` : html`<div style=${{ display: 'contents' }}>
         <div className="frame"><i></i><i></i><i></i><i></i></div>
-        <div className="scan-hint"><span className="glass">${camReady ? 'Fit the whole plate inside the frame' : 'Starting camera…'}</span></div>
+        <div className="scan-hint"><span className="glass">${camReady ? 'Shoot from above with the whole plate in the frame' : 'Starting camera…'}</span></div>
         <div className="scan-bottom">
           <button className="side-btn glass press" aria-label="Choose from library" onClick=${() => libRef.current.click()}><${Icon} name="image" size=${22} /></button>
           <button className="shutter" aria-label="Take photo" disabled=${!camReady} onClick=${capture}><span></span></button>
@@ -2428,25 +2581,40 @@ function Scanner({ onClose }) {
     ${stage === 'preview' && html`<div style=${{ display: 'contents' }}>
       <div className="cam"><img src=${img} alt="Your meal photo" /></div>
       ${flash && html`<div className="flash"></div>`}
-      ${top(closeBtn, demoPill)}
-      <div className="preview-actions">
-        <button className="btn ghost press" onClick=${() => { setImg(null); setStage('camera'); }}>Retake</button>
-        <button className="btn primary press" onClick=${analyze}><${Icon} name="sparkles" size=${18} />Analyze photo</button>
+      ${top(closeBtn, modePill)}
+      <div className="preview-actions col">
+        ${live && html`<input className="inp glass-inp" value=${note} maxLength=${200} placeholder="Add a note (optional), e.g. sambal lebih, ayam berempah" onChange=${e => setNote(e.target.value)} aria-label="Note for the AI" />`}
+        <div className="row-btns">
+          <button className="btn ghost press" onClick=${restart}>Retake</button>
+          <button className="btn primary press" onClick=${analyze}><${Icon} name="sparkles" size=${18} />Analyze photo</button>
+        </div>
       </div>
     </div>`}
 
     ${stage === 'analyzing' && html`<div className="analyzing">
-      ${top(closeBtn, demoPill)}
+      ${top(html`<button className="round-btn glass press" aria-label="Cancel" onClick=${cancelAnalyze}><${Icon} name="x" size=${18} /></button>`, modePill)}
       <div className="an-photo"><img src=${img} alt="" /><div className="an-grid"></div><div className="an-line"></div></div>
       <div className="an-status"><h3><${Icon} name="sparkles" size=${20} />Analyzing your meal</h3><p key=${status}>${STATUS[status]}</p></div>
       <div className="skel-wrap"><div className="skel"></div><div className="skel" style=${{ opacity: .7 }}></div><div className="skel" style=${{ opacity: .45 }}></div></div>
     </div>`}
 
+    ${stage === 'error' && html`<div className="analyzing">
+      ${top(closeBtn, modePill)}
+      <div className="an-photo"><img src=${img} alt="" style=${{ filter: 'grayscale(.6) brightness(.6)' }} /></div>
+      <div className="cam-err" style=${{ position: 'static', margin: '18px', background: 'var(--s1)', border: '1px solid var(--line)' }}>
+        <div className="halo"><${Icon} name="alert" size=${26} /></div>
+        <h3>Couldn’t analyze this photo</h3><p>${aiErr}</p>
+        <button className="btn primary press" onClick=${analyze}>Try again</button>
+        <button className="btn ghost press" onClick=${restart}>Take another photo</button>
+      </div>
+    </div>`}
+
     ${stage === 'results' && html`<div style=${{ display: 'contents' }}>
-      ${top(closeBtn, html`<button className="pill glass press" onClick=${() => { setItems([]); setImg(null); setStage('camera'); }}><${Icon} name="camera" size=${14} />Rescan</button>`)}
+      ${top(closeBtn, html`<button className="pill glass press" onClick=${restart}><${Icon} name="camera" size=${14} />Rescan</button>`)}
       <div className="results">
         <div className="res-photo"><img src=${img} alt="Scanned meal" /><div><h2>${items.length} item${items.length === 1 ? '' : 's'} found</h2><p>Check each one before saving</p></div></div>
-        <div className="banner demo"><${Icon} name="alert" size=${17} /><span>Demo mode: these are fixed sample results, not an analysis of your photo. Real AI scanning is added in Stage 5.</span></div>
+        ${info.demo ? html`<div className="banner demo"><${Icon} name="alert" size=${17} /><span>Demo mode: these are fixed sample results, not an analysis of your photo. Connect Gemini in Settings → AI scanner.</span></div>`
+          : html`<div className="banner info"><${Icon} name="sparkles" size=${16} /><span>AI estimates${info.model ? ` from ${info.model}` : ''}. Weights judged from a photo are never exact, so adjust the grams if you know better.${info.skipped ? ` ${info.skipped} item${info.skipped > 1 ? 's were' : ' was'} left out because the numbers didn’t pass FitFuel’s checks.` : ''}${info.note ? ` ${info.note}` : ''}</span></div>`}
         <div className="res-total">
           <div><b>${fmt(tot.kcal)}</b><span>kcal</span></div>
           <div><b style=${{ color: 'var(--mint)' }}>${fmt(tot.protein)}</b><span>protein</span></div>
@@ -2454,15 +2622,75 @@ function Scanner({ onClose }) {
           <div><b style=${{ color: 'var(--coral)' }}>${fmt(tot.fat)}</b><span>fat</span></div>
         </div>
         <div className="meal-pick"><${MealSeg} value=${meal} onChange=${setMeal} /></div>
-        ${items.map((it, i) => html`<${ResultItem} key=${it.id} it=${it} index=${i}
+        ${items.map((it, i) => html`<${ResultItem} key=${it.id} it=${it} index=${i} meta=${meta}
           onChange=${n => setItems(list => list.map(x => x.id === it.id ? n : x))}
           onRemove=${() => setItems(list => list.filter(x => x.id !== it.id))} />`)}
         <button className="add-big press" onClick=${addItem}><${Icon} name="plus" size=${18} />Add a missed item</button>
-        <div className="banner info"><${Icon} name="info" size=${16} /><span>Weights from a photo are always estimates. Adjust the grams if you know the real portion.</span></div>
       </div>
       <div className="save-bar"><button className="btn primary block press" disabled=${!items.length} onClick=${save}><${Icon} name="check" size=${19} />Save to ${mealLabel(meal)}</button></div>
     </div>`}
   </div>`;
+}
+
+function AiSheet({ onClose }) {
+  const { meta, setMeta, notify } = useApp();
+  const [url, setUrl] = useState(meta.aiUrl || '');
+  const [token, setToken] = useState(meta.aiToken || '');
+  const [test, setTest] = useState({ status: 'idle', msg: '' });
+  const newToken = () => { const b = new Uint8Array(24); crypto.getRandomValues(b); setToken(Array.from(b, x => x.toString(16).padStart(2, '0')).join('')); setTest({ status: 'idle', msg: '' }); };
+  const copy = async (text, what) => {
+    try { await navigator.clipboard.writeText(text); notify(`${what} copied`); }
+    catch (_) { notify('Copying isn’t allowed here. Open FitFuel from your Home Screen and try again.', 'err'); }
+  };
+  const check = () => {
+    const u = url.trim(), t = token.trim();
+    if (!/^https:\/\/[^\s/]+\.[^\s]+$/.test(u)) return 'Enter the Worker address starting with https://';
+    if (t.length < 24) return 'Create a token first. It needs at least 24 characters.';
+    return '';
+  };
+  const save = close => {
+    const e = check();
+    if (e) return setTest({ status: 'err', msg: e });
+    setMeta('aiUrl', url.trim()); setMeta('aiToken', token.trim());
+    notify('AI scanner settings saved');
+    close();
+  };
+  const runTest = async () => {
+    const e = check();
+    if (e) return setTest({ status: 'err', msg: e });
+    setTest({ status: 'loading', msg: 'Testing…' });
+    try {
+      const r = await callWorker({ aiUrl: url.trim(), aiToken: token.trim() }, { ping: true }, { timeout: 15000 });
+      setTest(r && r.ok ? { status: 'ok', msg: `Connected. Your Worker will use ${r.model}.` } : { status: 'err', msg: 'The Worker answered, but not the way FitFuel expected. Check the Worker code.' });
+    } catch (err) { setTest({ status: 'err', msg: aiErrorText(err) || 'The test was cancelled.' }); }
+  };
+  const disconnect = () => { setMeta('aiUrl', ''); setMeta('aiToken', ''); setUrl(''); setToken(''); setTest({ status: 'idle', msg: '' }); notify('Back to demo mode'); };
+  return html`<${Sheet} title="AI scanner" onClose=${onClose}>
+    ${close => html`<div>
+      <div className=${'banner ' + (aiConfigured(meta) ? 'info' : 'demo')} style=${{ marginBottom: 16 }}><${Icon} name=${aiConfigured(meta) ? 'sparkles' : 'info'} size=${16} />
+        <span>${aiConfigured(meta) ? 'Connected. Photos you scan go to your Cloudflare Worker, then to Google Gemini. Your food log stays on this iPhone.' : 'Demo mode. The scanner shows fixed sample results until you connect your own Worker.'}</span></div>
+      <div className="field"><label>Worker address</label>
+        <input className="inp" value=${url} placeholder="https://fitfuel-ai.yourname.workers.dev" autoCapitalize="off" autoCorrect="off" spellCheck=${false} inputMode="url" onChange=${e => setUrl(e.target.value)} />
+      </div>
+      <div className="field"><label>App token</label>
+        <div className="token-row">
+          <input className="inp num" value=${token} placeholder="Tap Create" autoCapitalize="off" autoCorrect="off" spellCheck=${false} onChange=${e => setToken(e.target.value)} />
+          <button className="btn ghost press" onClick=${newToken}>Create</button>
+          <button className="btn ghost press" disabled=${!token} onClick=${() => copy(token, 'Token')} aria-label="Copy token"><${Icon} name="copy" size=${17} /></button>
+        </div>
+      </div>
+      <p className="hint">Put the same token in Cloudflare as the secret APP_TOKEN. It stops other people from using your Worker and your Gemini quota.</p>
+      ${test.msg && html`<p className=${test.status === 'err' ? 'err' : 'hint'} style=${test.status === 'ok' ? { color: 'var(--lime)' } : null}>${test.status === 'err' && html`<${Icon} name="alert" size=${15} />`}${test.msg}</p>`}
+      <div className="actions">
+        <button className="btn ghost press" disabled=${test.status === 'loading'} onClick=${runTest}>Test</button>
+        <button className="btn primary press" onClick=${() => save(close)}>Save</button>
+      </div>
+      <p className="group-title">Worker code</p>
+      <p className="hint">Paste this into your Cloudflare Worker. It keeps your Gemini key secret and checks every request.</p>
+      <button className="btn ghost block press" disabled=${!WORKER_CODE} onClick=${() => copy(WORKER_CODE, 'Worker code')}><${Icon} name="copy" size=${17} />Copy Worker code</button>
+      ${aiConfigured(meta) && html`<button className="btn danger block press" style=${{ marginTop: 10 }} onClick=${disconnect}>Disconnect and use demo mode</button>`}
+    </div>`}
+  <//>`;
 }
 
 /* ---------------- shell ---------------- */
