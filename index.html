@@ -461,6 +461,8 @@ div.row{cursor:default}
 .link-inline{color:var(--lime);font-weight:600;font-size:13px;padding:0;display:inline}
 .token-row{display:flex;gap:8px}.token-row .inp{flex:1;min-width:0;font-size:13px}.token-row .btn{height:50px;padding:0 14px;flex:none}
 .an-status p.an-wait{font-size:13px;color:var(--dim);margin-top:2px}
+.err-code{font-size:12px;color:var(--dim);line-height:1.4;margin:-8px 2px 14px;word-break:break-word;font-family:ui-monospace,Menlo,monospace}
+.cam-err .err-code{margin:-8px 0 14px}
 </style>
 </head>
 <body>
@@ -2346,6 +2348,7 @@ function aiErrorText(e) {
   if (m === 'bad_ai_json' || m === 'empty') return 'The AI gave an answer FitFuel couldn’t read. Try again.';
   return 'The AI service isn’t responding properly. Try again in a moment.';
 }
+const aiErrorCode = (e, secs) => [e && e.message ? `code ${e.message}` : '', e && e.status ? `HTTP ${e.status}` : '', e && e.detail ? String(e.detail).slice(0, 160) : '', secs != null ? `after ${secs}s` : ''].filter(Boolean).join(', ');
 /* Check every number before it can reach the log. */
 function validateAiResult(r) {
   if (!r || typeof r !== 'object') return { ok: false, items: [], skipped: 0 };
@@ -2452,6 +2455,7 @@ function Scanner({ onClose }) {
   const [elapsed, setElapsed] = useState(0);
   const [note, setNote] = useState('');
   const [aiErr, setAiErr] = useState('');
+  const [aiCode, setAiCode] = useState('');
   const [info, setInfo] = useState({ model: '', skipped: 0, note: '', demo: !live });
   const videoRef = useRef(null), streamRef = useRef(null), libRef = useRef(null), shotRef = useRef(null), timerRef = useRef(null), abortRef = useRef(null);
 
@@ -2517,6 +2521,7 @@ function Scanner({ onClose }) {
     try { small = await shrinkDataUrl(img); } catch (_) { setAiErr('That photo couldn’t be prepared. Try another one.'); setStage('error'); return; }
     const payload = { image: small.split(',')[1], mimeType: 'image/jpeg', note: note.trim() };
     let out, lastErr;
+    const t0 = Date.now();
     for (let attempt = 0; attempt < 2; attempt++) {
       try { out = await callWorker(meta, payload, { signal: ctrl.signal }); break; }
       catch (e) {
@@ -2526,7 +2531,7 @@ function Scanner({ onClose }) {
         break;
       }
     }
-    if (!out) { setAiErr(aiErrorText(lastErr)); setStage('error'); return; }
+    if (!out) { setAiErr(aiErrorText(lastErr)); setAiCode(aiErrorCode(lastErr, Math.round((Date.now() - t0) / 1000))); setStage('error'); return; }
     const v = validateAiResult(out.result);
     if (!v.ok) { setAiErr('The AI gave an answer FitFuel couldn’t read. Try again.'); setStage('error'); return; }
     if (!v.isFood || (!v.items.length && !v.skipped)) { setAiErr('No food was found in this photo. Try again with the whole plate in view.'); setStage('error'); return; }
@@ -2536,7 +2541,7 @@ function Scanner({ onClose }) {
     setInfo({ model: out.model || '', skipped: v.skipped, note: v.note, demo: false });
     setStage('results');
   };
-  const analyze = () => { setAiErr(''); setStage('analyzing'); if (live) runAi(); else runDemo(); };
+  const analyze = () => { setAiErr(''); setAiCode(''); setStage('analyzing'); if (live) runAi(); else runDemo(); };
   const cancelAnalyze = () => { clearTimeout(timerRef.current); if (abortRef.current) abortRef.current.abort(); setStage('preview'); };
 
   const addItem = () => setItems(list => [...list, { id: uid(), name: '', grams: '', kcal: '', protein: '', carbs: '', fat: '', per100: null, conf: null, ai: null, match: null, using: 'manual' }]);
@@ -2607,7 +2612,7 @@ function Scanner({ onClose }) {
       <div className="an-photo"><img src=${img} alt="" style=${{ filter: 'grayscale(.6) brightness(.6)' }} /></div>
       <div className="cam-err" style=${{ position: 'static', margin: '18px', background: 'var(--s1)', border: '1px solid var(--line)' }}>
         <div className="halo"><${Icon} name="alert" size=${26} /></div>
-        <h3>Couldn’t analyze this photo</h3><p>${aiErr}</p>
+        <h3>Couldn’t analyze this photo</h3><p>${aiErr}</p>${aiCode && html`<p className="err-code">Details: ${aiCode}</p>`}
         <button className="btn primary press" onClick=${analyze}>Try again</button>
         <button className="btn ghost press" onClick=${restart}>Take another photo</button>
       </div>
@@ -2668,6 +2673,26 @@ function AiSheet({ onClose }) {
       setTest(r && r.ok ? { status: 'ok', msg: `Connected. Your Worker will use ${r.model}.` } : { status: 'err', msg: 'The Worker answered, but not the way FitFuel expected. Check the Worker code.' });
     } catch (err) { setTest({ status: 'err', msg: aiErrorText(err) || 'The test was cancelled.' }); }
   };
+  const [full, setFull] = useState({ status: 'idle', msg: '', code: '', secs: 0 });
+  const runFull = async () => {
+    const e = check();
+    if (e) return setFull({ status: 'err', msg: e, code: '', secs: 0 });
+    const c = document.createElement('canvas'); c.width = 64; c.height = 64;
+    const g = c.getContext('2d'); if (g) { g.fillStyle = '#808080'; g.fillRect(0, 0, 64, 64); }
+    const t0 = Date.now();
+    setFull({ status: 'loading', msg: '', code: '', secs: 0 });
+    const tick = setInterval(() => setFull(f => f.status === 'loading' ? { ...f, secs: Math.floor((Date.now() - t0) / 1000) } : f), 1000);
+    try {
+      const out = await callWorker({ aiUrl: url.trim(), aiToken: token.trim() }, { image: c.toDataURL('image/jpeg', 0.8).split(',')[1], mimeType: 'image/jpeg', note: 'This is a plain grey test image.' });
+      const secs = Math.round((Date.now() - t0) / 1000);
+      const v = validateAiResult(out.result);
+      setFull(v.ok ? { status: 'ok', msg: `Gemini (${out.model || 'unknown model'}) answered in ${secs} seconds. The full scan path works.`, code: '', secs }
+        : { status: 'err', msg: `Gemini answered in ${secs} seconds, but not in the format FitFuel expects.`, code: '', secs });
+    } catch (err) {
+      const secs = Math.round((Date.now() - t0) / 1000);
+      setFull({ status: 'err', msg: aiErrorText(err) || 'The test was cancelled.', code: aiErrorCode(err, secs), secs });
+    } finally { clearInterval(tick); }
+  };
   const disconnect = () => { setMeta('aiUrl', ''); setMeta('aiToken', ''); setUrl(''); setToken(''); setTest({ status: 'idle', msg: '' }); notify('Back to demo mode'); };
   return html`<${Sheet} title="AI scanner" onClose=${onClose}>
     ${close => html`<div>
@@ -2689,6 +2714,11 @@ function AiSheet({ onClose }) {
         <button className="btn ghost press" disabled=${test.status === 'loading'} onClick=${runTest}>Test</button>
         <button className="btn primary press" onClick=${() => save(close)}>Save</button>
       </div>
+      <p className="group-title">Full test</p>
+      <p className="hint">Sends a small grey test image through your Worker to Gemini and times the answer. Use this when scans fail.</p>
+      <button className="btn ghost block press" disabled=${full.status === 'loading'} onClick=${runFull}>${full.status === 'loading' ? `Waiting for Gemini… ${full.secs}s` : 'Run full test'}</button>
+      ${full.msg && html`<p className=${full.status === 'err' ? 'err' : 'hint'} style=${full.status === 'ok' ? { color: 'var(--lime)', marginTop: 10 } : { marginTop: 10 }}>${full.status === 'err' && html`<${Icon} name="alert" size=${15} />`}${full.msg}</p>`}
+      ${full.code && html`<p className="err-code">Details: ${full.code}</p>`}
       <p className="group-title">Worker code</p>
       <p className="hint">Paste this into your Cloudflare Worker. It keeps your Gemini key secret and checks every request.</p>
       <button className="btn ghost block press" disabled=${!WORKER_CODE} onClick=${() => copy(WORKER_CODE, 'Worker code')}><${Icon} name="copy" size=${17} />Copy Worker code</button>
